@@ -1,0 +1,181 @@
+<project>
+    <shortName>zargatepos</shortName>
+    <fullName>ZarGate POS</fullName>
+    <version>2.40.1</version>
+    <readmeFile>E:/Dropbox/Zargate/OpenBravo/README</readmeFile>
+    <licenseFile>E:/Dropbox/Zargate/OpenBravo/licensing/gpl-3.0.txt</licenseFile>
+    <leftImage>E:\Dropbox\Zargate\OpenBravo\src-beans\com\openbravo\images\favicon.png</leftImage>
+    <logoImage>E:\Dropbox\Zargate\OpenBravo\src-beans\com\openbravo\images\favicon.png</logoImage>
+    <splashImage>E:\Dropbox\Zargate\OpenBravo\src-beans\com\openbravo\images\favicon.png</splashImage>
+    <allowLanguageSelection>1</allowLanguageSelection>
+    <componentList>
+        <component>
+            <name>default</name>
+            <description>Default Component</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <desktopShortcutList>
+                <shortcut>
+                    <comment>ZarGate POS is a point of sale designed for ZarGate</comment>
+                    <exec>sh ${installdir}/start.sh</exec>
+                    <icon>${installdir}/favicon.png</icon>
+                    <name>ZarGate POS</name>
+                    <path>${installdir}</path>
+                    <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/start.bat</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/zgpos_logo.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+            </desktopShortcutList>
+            <folderList>
+                <folder>
+                    <description>DEB1</description>
+                    <destination>/usr/share/icons</destination>
+                    <name>zargateposiscon</name>
+                    <platforms>linux</platforms>
+                </folder>
+                <folder>
+                    <description>DEB2</description>
+                    <destination>/usr/share/applications</destination>
+                    <name>zargateposdesktop</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/zargatepos.desktop</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DEB3</description>
+                    <destination>/usr/bin/</destination>
+                    <name>zargateposexec</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/zargatepos</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfiles</name>
+                    <platforms>all</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/reports</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/locales</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/licensing</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/lib</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/dist/openbravopos.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/README</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/openbravo-logo-128.png</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/favicon.ico</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/start.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/start.sh</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/configure.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/configure.sh</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/favicon.png</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>E:/Dropbox/Zargate/OpenBravo/zgpos_logo.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>ZarGate POS is a point of sale designed for ZarGate</comment>
+                    <name>ZarGate POS</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/start.bat</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}//zgpos_logo.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Configure ZarGate POS</comment>
+                    <name>ZarGate POS configuration</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/configure.bat</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/openbravo-logo.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Uninstall ${product_fullname}</comment>
+                    <name>Uninstall ${product_fullname}</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}/</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+    <description>ZarGate POS is a point of sale designed for ZarGate</description>
+    <enableRollback>1</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>E:/Dropbox/Zargate/OpenBravo</outputDirectory>
+    <release>4</release>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <summary>POS</summary>
+    <vendor>ZarGate</vendor>
+    <parameterList>
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value>${platform_install_prefix}/${product_shortname}-${product_version}</value>
+            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>30</width>
+        </directoryParameter>
+    </parameterList>
+    <platformOptionsList>
+        <platformOptions>
+            <description>ZarGate POS is a point of sale designed for ZarGate</description>
+            <platform>debian</platform>
+            <release>1</release>
+            <summary>POS</summary>
+            <vendor>ZarGate</vendor>
+        </platformOptions>
+    </platformOptionsList>
+</project>
+

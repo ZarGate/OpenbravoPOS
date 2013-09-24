@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Openbravo POS is a point of sales application designed for touch screens.
+    Copyright (C) 2007-2009 Openbravo, S.L.
+    http://sourceforge.net/projects/openbravopos
+
+    This file is part of Openbravo POS.
+
+    Openbravo POS is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Openbravo POS is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Openbravo POS.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<output>
+    #if (${ticket.getLinesToKitchenCount()} > 0)
+    <ticket printer="2">
+        <line>
+            <text size="1" align="center" bold="true">Kjøkken</text>
+        </line>
+        <line></line>
+        #if (${ticket.ticketType} == 0)
+        <line size="2">
+            <text align="left" length="9">Nummer:</text>
+            <text bold="true">${ticket.printId()}</text>
+        </line>
+        #end
+        <line>
+            <text align="left" length="15">Dato:</text>
+            <text>${ticket.printDate()}</text>
+        </line>
+         #if ($ticket.getCustomer())
+        <line>
+            <text align="left" length="15">Customer:</text>
+            <text>${ticket.getCustomer().printName()}</text>
+        </line>
+        #end
+        <line></line>
+        <line>
+            <text align ="left" length="17">Item</text>
+            <text align ="right" length="5"></text>
+        </line>
+        <line>
+             <text>------------------------------------------</text>
+        </line>
+        #foreach ($ticketline in $ticket.getLines())
+            #if ($ticketline.isKitchenPrint())
+                <line>
+                    #if ($ticketline.isProductCom())
+                        <text align ="left" length="17">*${ticketline.printName()}</text>
+                    #else
+                        <text align ="left" length="17">${ticketline.printName()}</text>
+                    #end
+                    <text align ="right" length="5">${ticketline.printMultiply()} stk</text>
+                </line>
+                #if ($ticketline.productAttSetInstId)
+                    <line>
+                            <text align ="left" length="42">    ${ticketline.productAttSetInstDesc}</text>
+                    </line>
+                #end
+            #end
+        #end
+        <line>
+             <text>------------------------------------------</text>
+        </line>
+        <line>
+            <text>Antall artikler: </text>
+            <text align ="right" length="10">${ticket.printArticlesCount()}</text>
+        </line>
+        <line></line>
+    </ticket>
+    #end
+</output>
