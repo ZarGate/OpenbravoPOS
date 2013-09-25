@@ -143,6 +143,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         jcboMachinePrinter.addItem("surepos");
         jcboMachinePrinter.addItem("plain");
         jcboMachinePrinter.addItem("javapos");
+        jcboMachinePrinter.addItem("epos");
         jcboMachinePrinter.addItem("Not defined");
 
         jcboConnPrinter.addItem("serial");
@@ -168,6 +169,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         jcboMachinePrinter2.addItem("surepos");
         jcboMachinePrinter2.addItem("plain");
         jcboMachinePrinter2.addItem("javapos");
+        jcboMachinePrinter2.addItem("epos");
         jcboMachinePrinter2.addItem("Not defined");
 
         jcboConnPrinter2.addItem("serial");
@@ -193,6 +195,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         jcboMachinePrinter3.addItem("surepos");
         jcboMachinePrinter3.addItem("plain");
         jcboMachinePrinter3.addItem("javapos");
+        jcboMachinePrinter3.addItem("epos");
         jcboMachinePrinter3.addItem("Not defined");
 
         jcboConnPrinter3.addItem("serial");
@@ -305,6 +308,10 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         } else if ("printer".equals(sparam)) {
             jcboMachinePrinter.setSelectedItem(sparam);
             printer1printerparams.setParameters(p);
+        } else if ("epos".equals(sparam)) {
+            jcboMachinePrinter.setSelectedItem(sparam);
+            m_jtxtEPOSPrinterIP.setText(p.nextToken(','));
+            m_jtxtEPOSPrinterID.setText(p.nextToken(','));
         } else {
             jcboMachinePrinter.setSelectedItem(sparam);
             jcboConnPrinter.setSelectedItem(unifySerialInterface(p.nextToken(',')));
@@ -324,6 +331,10 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         } else if ("printer".equals(sparam)) {
             jcboMachinePrinter2.setSelectedItem(sparam);
             printer2printerparams.setParameters(p);
+        } else if ("epos".equals(sparam)) {
+            jcboMachinePrinter2.setSelectedItem(sparam);
+            m_jtxtEPOSPrinterIP2.setText(p.nextToken(','));
+            m_jtxtEPOSPrinterID2.setText(p.nextToken(','));
         } else {
             jcboMachinePrinter2.setSelectedItem(sparam);
             jcboConnPrinter2.setSelectedItem(unifySerialInterface(p.nextToken(',')));
@@ -343,6 +354,10 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         } else if ("printer".equals(sparam)) {
             jcboMachinePrinter3.setSelectedItem(sparam);
             printer3printerparams.setParameters(p);
+        } else if ("epos".equals(sparam)) {
+            jcboMachinePrinter3.setSelectedItem(sparam);
+            m_jtxtEPOSPrinterIP3.setText(p.nextToken(','));
+            m_jtxtEPOSPrinterID3.setText(p.nextToken(','));
         } else {
             jcboMachinePrinter3.setSelectedItem(sparam);
             jcboConnPrinter3.setSelectedItem(unifySerialInterface(p.nextToken(',')));
@@ -402,6 +417,8 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
             config.setProperty("machine.printer", sMachinePrinter + ":" + m_jtxtJPOSPrinter.getText() + "," + m_jtxtJPOSDrawer.getText());
         } else if ("printer".equals(sMachinePrinter)) {
             config.setProperty("machine.printer", sMachinePrinter + ":" + printer1printerparams.getParameters());
+        } else if ("epos".equals(sMachinePrinter)) {
+            config.setProperty("machine.printer", sMachinePrinter + ":" + m_jtxtEPOSPrinterIP.getText().trim() + "," + m_jtxtEPOSPrinterID.getText().trim());
         } else {
             config.setProperty("machine.printer", sMachinePrinter);
         }
@@ -413,6 +430,8 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
             config.setProperty("machine.printer.2", sMachinePrinter2 + ":" + m_jtxtJPOSPrinter2.getText() + "," + m_jtxtJPOSDrawer2.getText());
         } else if ("printer".equals(sMachinePrinter2)) {
             config.setProperty("machine.printer.2", sMachinePrinter2 + ":" + printer2printerparams.getParameters());
+        } else if ("epos".equals(sMachinePrinter2)) {
+            config.setProperty("machine.printer.2", sMachinePrinter2 + ":" + m_jtxtEPOSPrinterIP2.getText().trim() + "," + m_jtxtEPOSPrinterID2.getText().trim());
         } else {
             config.setProperty("machine.printer.2", sMachinePrinter2);
         }
@@ -425,6 +444,8 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
             config.setProperty("machine.printer.3", sMachinePrinter3 + ":" + m_jtxtJPOSPrinter3.getText() + "," + m_jtxtJPOSDrawer3.getText());
         } else if ("printer".equals(sMachinePrinter3)) {
             config.setProperty("machine.printer.3", sMachinePrinter3 + ":" + printer3printerparams.getParameters());
+        } else if ("epos".equals(sMachinePrinter3)) {
+            config.setProperty("machine.printer.3", sMachinePrinter3 + ":" + m_jtxtEPOSPrinterIP3.getText() + "," + m_jtxtEPOSPrinterID3.getText());
         } else {
             config.setProperty("machine.printer.3", sMachinePrinter3);
         }
@@ -564,6 +585,11 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         m_jtxtJPOSPrinter = new javax.swing.JTextField();
         m_jtxtJPOSDrawer = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
+        jPanel18 = new javax.swing.JPanel();
+        m_jtxtEPOSPrinterIP = new javax.swing.JTextField();
+        m_jtxtEPOSPrinterID = new javax.swing.JTextField();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jcboMachinePrinter2 = new javax.swing.JComboBox();
         jLabel19 = new javax.swing.JLabel();
@@ -579,6 +605,11 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         m_jtxtJPOSDrawer2 = new javax.swing.JTextField();
         jLabel27 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        m_jtxtEPOSPrinterIP2 = new javax.swing.JTextField();
+        m_jtxtEPOSPrinterID2 = new javax.swing.JTextField();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
         jcboMachinePrinter3 = new javax.swing.JComboBox();
         jLabel25 = new javax.swing.JLabel();
         jcboMachineScale = new javax.swing.JComboBox();
@@ -598,6 +629,11 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         m_jtxtJPOSDrawer3 = new javax.swing.JTextField();
         jLabel28 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        m_jtxtEPOSPrinterIP3 = new javax.swing.JTextField();
+        m_jtxtEPOSPrinterID3 = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
         m_jScaleParams = new javax.swing.JPanel();
         jPanel16 = new javax.swing.JPanel();
         jPanel17 = new javax.swing.JPanel();
@@ -765,6 +801,38 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         m_jPrinterParams1.add(jPanel4, "javapos");
 
+        jLabel33.setText(AppLocal.getIntString("label.javapos.printer")); // NOI18N
+
+        jLabel34.setText(AppLocal.getIntString("label.javapos.drawer")); // NOI18N
+
+        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
+        jPanel18.setLayout(jPanel18Layout);
+        jPanel18Layout.setHorizontalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterIP, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterID, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(89, Short.MAX_VALUE))
+        );
+        jPanel18Layout.setVerticalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(m_jtxtEPOSPrinterIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel34)
+                    .addComponent(m_jtxtEPOSPrinterID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel33))
+                .addGap(224, 224, 224))
+        );
+
+        m_jPrinterParams1.add(jPanel18, "epos");
+
         jLabel18.setText(AppLocal.getIntString("Label.MachinePrinter2")); // NOI18N
 
         jcboMachinePrinter2.addActionListener(new java.awt.event.ActionListener() {
@@ -843,6 +911,38 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         );
 
         m_jPrinterParams2.add(jPanel11, "javapos");
+
+        jLabel31.setText(AppLocal.getIntString("label.javapos.printer")); // NOI18N
+
+        jLabel32.setText(AppLocal.getIntString("label.javapos.drawer")); // NOI18N
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterID2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(89, Short.MAX_VALUE))
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(m_jtxtEPOSPrinterIP2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel32)
+                    .addComponent(m_jtxtEPOSPrinterID2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel31))
+                .addGap(224, 224, 224))
+        );
+
+        m_jPrinterParams2.add(jPanel15, "epos");
 
         jcboMachinePrinter3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -936,6 +1036,38 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         );
 
         m_jPrinterParams3.add(jPanel12, "javapos");
+
+        jLabel29.setText(AppLocal.getIntString("label.javapos.printer")); // NOI18N
+
+        jLabel30.setText(AppLocal.getIntString("label.javapos.drawer")); // NOI18N
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtEPOSPrinterID3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(89, Short.MAX_VALUE))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(m_jtxtEPOSPrinterIP3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel30)
+                    .addComponent(m_jtxtEPOSPrinterID3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29))
+                .addGap(224, 224, 224))
+        );
+
+        m_jPrinterParams3.add(jPanel14, "epos");
 
         m_jScaleParams.setLayout(new java.awt.CardLayout());
         m_jScaleParams.add(jPanel16, "empty");
@@ -1233,6 +1365,12 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -1241,8 +1379,11 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel24;
@@ -1289,6 +1430,12 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JPanel m_jPrinterParams3;
     private javax.swing.JPanel m_jScaleParams;
     private javax.swing.JPanel m_jScannerParams;
+    private javax.swing.JTextField m_jtxtEPOSPrinterID;
+    private javax.swing.JTextField m_jtxtEPOSPrinterID2;
+    private javax.swing.JTextField m_jtxtEPOSPrinterID3;
+    private javax.swing.JTextField m_jtxtEPOSPrinterIP;
+    private javax.swing.JTextField m_jtxtEPOSPrinterIP2;
+    private javax.swing.JTextField m_jtxtEPOSPrinterIP3;
     private javax.swing.JTextField m_jtxtJPOSDrawer;
     private javax.swing.JTextField m_jtxtJPOSDrawer2;
     private javax.swing.JTextField m_jtxtJPOSDrawer3;
