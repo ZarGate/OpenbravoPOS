@@ -21,6 +21,8 @@ package com.openbravo.pos.printer.epos;
 import com.lowagie.text.pdf.codec.Base64;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.printer.DevicePrinter;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -106,23 +109,102 @@ public class DevicePrinterEPOS implements DevicePrinter {
     }
 
     public void printImage(BufferedImage image) {
+        Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.INFO, "Starting to print image!", "");
         if (m_out == null) {
             return;
         }
+
+        int maxWidth = 320;
+        int width = image.getWidth();
+        int height = image.getHeight();
+        if (width > maxWidth) {
+            height = (maxWidth / width) * height;
+            width = maxWidth;
+            image = resizeImage(image, width, height);
+        }
+        image = ConvertToBlackAndWhite(image);
+        String output = encodeToString(image, "png");
+        Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.INFO, "Print image outputted", output);
         try {
             m_out.writeStartElement("image");
             m_out.writeAttribute("align", "center");
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            OutputStream b64 = new Base64.OutputStream(os);
-            ImageIO.write(image, "png", b64);
-            m_out.writeCharacters(os.toString("UTF-8"));
+            m_out.writeAttribute("height", Integer.toString(height));
+            m_out.writeAttribute("width", Integer.toString(width));
+            m_out.writeCharacters(output);
             m_out.writeEndElement();
         } catch (XMLStreamException ex) {
             Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+        int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+        BufferedImage resizedImage = new BufferedImage(width, height, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, width, height, null);
+        g.dispose();
+
+        return resizedImage;
+    }
+
+    private BufferedImage ConvertToBlackAndWhite(BufferedImage image) {
+        BufferedImage original = image;
+        BufferedImage binarized = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        int red;
+        int newPixel;
+        int threshold = 230;
+        for (int i = 0; i < original.getWidth(); i++) {
+            for (int j = 0; j < original.getHeight(); j++) {
+
+                // Get pixels
+                red = new Color(original.getRGB(i, j)).getRed();
+
+                int alpha = new Color(original.getRGB(i, j)).getAlpha();
+
+                if (red > threshold) {
+                    newPixel = 0;
+                } else {
+                    newPixel = 255;
+                }
+                newPixel = colorToRGB(alpha, newPixel, newPixel, newPixel);
+                binarized.setRGB(i, j, newPixel);
+
+            }
+        }
+        return binarized;
+    }
+
+    private static int colorToRGB(int alpha, int red, int green, int blue) {
+        int newPixel = 0;
+        newPixel += alpha;
+        newPixel = newPixel << 8;
+        newPixel += red;
+        newPixel = newPixel << 8;
+        newPixel += green;
+        newPixel = newPixel << 8;
+        newPixel += blue;
+
+        return newPixel;
+    }
+
+    public static String encodeToString(BufferedImage image, String type) {
+        String imageString = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try {
+            ImageIO.write(image, type, bos);
+            byte[] imageBytes = bos.toByteArray();
+
+            BASE64Encoder encoder = new BASE64Encoder();
+            imageString = encoder.encode(imageBytes);
+
+            bos.close();
         } catch (IOException ex) {
             Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
         }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        return imageString;
     }
 
     public void printBarCode(String type, String position, String code) {
@@ -204,6 +286,7 @@ public class DevicePrinterEPOS implements DevicePrinter {
             Document doc = (Document) result.getNode();
             Element el = (Element) doc.getElementsByTagNameNS(m_eposXmlNamespace, "response").item(0);
 
+            Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.INFO, "Print receipt", el.getTextContent());
         } catch (XMLStreamException ex) {
             Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -229,7 +312,35 @@ public class DevicePrinterEPOS implements DevicePrinter {
         } catch (XMLStreamException ex) {
             Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
         }
-        endReceipt();
+        try {
+            m_out.writeEndElement();
+            m_out.writeEndElement();
+            m_out.writeEndElement();
+            m_out.writeEndDocument();
+            m_out.close();
+
+            m_conn.connect();
+
+            // Receive response document
+            StreamSource source = new StreamSource(m_conn.getInputStream());
+            DOMResult result = new DOMResult();
+            TransformerFactory f2 = TransformerFactory.newInstance();
+            Transformer t = f2.newTransformer();
+            t.transform(source, result);
+
+            // Parse response document (DOM)
+            Document doc = (Document) result.getNode();
+            Element el = (Element) doc.getElementsByTagNameNS(m_eposXmlNamespace, "response").item(0);
+
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerConfigurationException ex) {
+            Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private String getPrinterURL() throws Exception {
