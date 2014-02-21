@@ -19,10 +19,6 @@
 
 package com.openbravo.pos.printer.escpos;
 
-import com.openbravo.pos.printer.DevicePrinter;
-import com.openbravo.pos.printer.DeviceTicket;
-import java.awt.image.BufferedImage;
-
 public class CodesEpson extends Codes {
     
     private static final byte[] INITSEQUENCE = {};
@@ -39,9 +35,7 @@ public class CodesEpson extends Codes {
     
     private static final byte[] OPEN_DRAWER = {0x1B, 0x70, 0x00, 0x32, -0x06};    
     private static final byte[] PARTIAL_CUT_1 = {0x1B, 0x69};
-    private static final byte[] IMAGE_BEGIN = {0x1B, 0x30};
-    private static final byte[] IMAGE_END = {0x1B, 0x7A, 0x01};
-    private static final byte[] IMAGE_HEADER = {0x1B, 0x4B};
+    private static final byte[] IMAGE_HEADER = {0x1D, 0x76, 0x30, 0x03};
     private static final byte[] NEW_LINE = {0x0D, 0x0A}; // Print and carriage return
     
     /** Creates a new instance of CodesEpson */
@@ -65,83 +59,4 @@ public class CodesEpson extends Codes {
     public byte[] getNewLine() { return NEW_LINE; } 
     public byte[] getImageHeader() { return IMAGE_HEADER; }
     public int getImageWidth() { return 256; }
-
-    @Override
-    public byte[] transImage(BufferedImage image) {
-
-        CenteredImage centeredimage = new CenteredImage(image, getImageWidth());
-
-        int iWidth = centeredimage.getWidth();
-        int iHeight = (centeredimage.getHeight() + 7) / 8; //
-
-        // Array de datos
-        byte[] bData = new byte[
-                IMAGE_BEGIN.length +
-                (getImageHeader().length + 2 + iWidth + getNewLine().length) * iHeight +
-                IMAGE_END.length];
-
-        // Comando de impresion de imagen
-
-        int index = 0;
-
-        System.arraycopy(IMAGE_BEGIN, 0, bData, index, IMAGE_BEGIN.length);
-        index += IMAGE_BEGIN.length;
-
-        // Raw data
-        int p;
-        for (int i = 0; i < centeredimage.getHeight(); i += 8) {
-            System.arraycopy(getImageHeader(), 0, bData, index, getImageHeader().length);
-            index += getImageHeader().length;
-
-             // Line Dimension
-            bData[index ++] = (byte) (iWidth % 256);
-            bData[index ++] = (byte) (iWidth / 256);
-
-            for (int j = 0; j < centeredimage.getWidth(); j++) {
-                p = 0x00;
-                for (int d = 0; d < 8; d ++) {
-                    p = p << 1;
-                   if (centeredimage.isBlack(j, i + d)) {
-                        p = p | 0x01;
-                    }
-                }
-
-                bData[index ++] = (byte) p;
-            }
-            System.arraycopy(getNewLine(), 0, bData, index, getNewLine().length);
-            index += getNewLine().length;
-
-        }
-
-        System.arraycopy(IMAGE_END, 0, bData, index, IMAGE_END.length);
-        index += IMAGE_END.length;
-
-        return bData;
-    }
-
-    @Override
-    public void printBarcode(PrinterWritter out, String type, String position, String code) {
-
-        if (DevicePrinter.BARCODE_EAN13.equals(type)) {
-
-            // out.write(getNewLine());
-
-            out.write(new byte[] {0x1B, 0x1D, 0x61, 0x01}); // Align center
-
-            out.write(new byte[] {0x1B, 0x62, 0x03});
-            if (DevicePrinter.POSITION_NONE.equals(position)) {
-                out.write(new byte[]{0x01});
-            } else {
-                out.write(new byte[]{0x02});
-            }
-            out.write(new byte[]{0x02}); // dots
-            out.write(new byte[]{0x50}); // height
-            out.write(DeviceTicket.transNumber(DeviceTicket.alignBarCode(code,13).substring(0,12)));
-            out.write(new byte[] { 0x1E }); // end char
-
-            out.write(new byte[] {0x1B, 0x1D, 0x61, 0x00}); // Align left
-
-        }
-    }
-
 }

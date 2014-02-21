@@ -30,6 +30,8 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import com.openbravo.pos.forms.DataLogicSystem;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TicketParser extends DefaultHandler {
     
@@ -116,7 +118,16 @@ public class TicketParser extends DefaultHandler {
         switch (m_iOutputType) {
         case OUTPUT_NONE:
             if ("opendrawer".equals(qName)) {
-                m_printer.getDevicePrinter(readString(attributes.getValue("printer"), "1")).openDrawer();
+                //m_printer.getDevicePrinter(readString(attributes.getValue("printer"), "1")).openDrawer();
+                String[] cmd = { "C:\\kasseskuff\\drawer.exe" };
+                try {
+                    Process p = Runtime.getRuntime().exec(cmd);
+                    p.waitFor();
+                } catch (IOException ex) {
+                    Logger.getLogger(TicketParser.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TicketParser.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else if ("play".equals(qName)) {
                  text = new StringBuffer();    
             } else if ("ticket".equals(qName)) {
