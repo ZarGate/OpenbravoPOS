@@ -89,7 +89,7 @@ public class JPaymentPaper extends javax.swing.JPanel implements JPaymentInterfa
         int iCompare = RoundUtils.compare(m_dTicket, m_dTotal);
         
         // it is allowed to pay more
-        m_notifier.setStatus(m_dTicket > 0.0, iCompare >= 0);
+        m_notifier.setStatus(m_dTicket > 0.0, iCompare >= 0, true);
     }
     
     private class RecalculateState implements PropertyChangeListener {

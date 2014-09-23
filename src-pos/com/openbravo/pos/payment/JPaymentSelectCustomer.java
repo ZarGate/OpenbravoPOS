@@ -60,13 +60,18 @@ public class JPaymentSelectCustomer extends JPaymentSelect {
         setHeaderVisible(true);
     }
     
-    protected void setStatusPanel(boolean isPositive, boolean isComplete) {
+    protected void setStatusPanel(boolean isPositive, boolean isComplete, boolean isWindowLocked) {
         
         setAddEnabled(isPositive && !isComplete);
         setOKEnabled(isPositive);
+        setWindowLocked(isWindowLocked);
     }
     
     protected PaymentInfo getDefaultPayment(double total) {
         return new PaymentInfoCash(total, total);
     }    
+
+    protected void executePayment() {
+        doClickOkButton();
+    }
 }

@@ -42,7 +42,7 @@ public class JPaymentRefund extends javax.swing.JPanel implements JPaymentInterf
     public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
         m_dTotal = dTotal;
         
-        m_notifier.setStatus(true, true);
+        m_notifier.setStatus(true, true, true);
     }
     
     public PaymentInfo executePayment() {

@@ -29,7 +29,7 @@ import java.awt.Component;
 public interface JPaymentInterface {
     
     public void activate(CustomerInfoExt customerext, double dTotal, String transactionID);    
-    public PaymentInfo executePayment();
+    public PaymentInfo executePayment() throws Exception;
     public Component getComponent();
     public String getInputString();
 }

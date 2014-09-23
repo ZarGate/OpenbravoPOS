@@ -61,7 +61,7 @@ public class JPaymentMagcard extends javax.swing.JPanel implements JPaymentInter
 
         if (m_cardpanel == null) {
             jlblMessage.setText(AppLocal.getIntString("message.nopaymentgateway"));  
-            m_notifier.setStatus(false, false);
+            m_notifier.setStatus(false, false, true);
         } else {
             jlblMessage.setText(null);
             m_cardpanel.activate(transaction, dTotal); 

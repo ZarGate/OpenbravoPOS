@@ -60,13 +60,19 @@ public class JPaymentSelectRefund extends JPaymentSelect {
         setHeaderVisible(false);
     }
     
-    protected void setStatusPanel(boolean isPositive, boolean isComplete) {
+    protected void setStatusPanel(boolean isPositive, boolean isComplete, boolean isWindowLocked) {
         
         setAddEnabled(isPositive && !isComplete);
         setOKEnabled(isComplete);
+        setWindowLocked(isWindowLocked);
     }    
     
     protected PaymentInfo getDefaultPayment(double total) {
         return new PaymentInfoTicket(total, "cashrefund");
     } 
+
+    protected void executePayment() {
+        doClickOkButton();
+    }
+    
 }

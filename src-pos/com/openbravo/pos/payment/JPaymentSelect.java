@@ -28,10 +28,15 @@ import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.forms.DataLogicSystem;
+import com.openbravo.pos.payment.listeners.IListenForCancelButtonAction;
 import java.awt.ComponentOrientation;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
@@ -46,12 +51,14 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
     private PaymentInfoList m_aPaymentInfo;
     private boolean printselected;
     private boolean accepted;
-    private AppView app;
+    private boolean m_bIsCloseable;
+    protected AppView app;
     private double m_dTotal;
     private CustomerInfoExt customerext;
     private DataLogicSystem dlSystem;
     private Map<String, JPaymentInterface> payments = new HashMap<String, JPaymentInterface>();
     private String m_sTransactionID;
+    private Vector cancelButtonActionListeners;
 
     /**
      * Creates new form JPaymentSelect
@@ -80,6 +87,24 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         printselected = true;
     }
 
+    private void addCancelButtonActionListener(IListenForCancelButtonAction listener) {
+        if (this.cancelButtonActionListeners == null) {
+            this.cancelButtonActionListeners = new Vector();
+        }
+        this.cancelButtonActionListeners.addElement(listener);
+    }
+    
+    protected void fireCancelButtonActionEvent() {
+        if (this.cancelButtonActionListeners != null && !this.cancelButtonActionListeners.isEmpty()) {
+            Enumeration e = this.cancelButtonActionListeners.elements();
+            while (e.hasMoreElements()) {
+                IListenForCancelButtonAction iListenForCancelButtonAction = (IListenForCancelButtonAction) e.nextElement();
+                iListenForCancelButtonAction.cancelButtonClicked();
+
+            }
+        }
+    }
+    
     public void setPrintSelected(boolean value) {
         printselected = value;
     }
@@ -127,7 +152,9 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 
     protected abstract void addTabs();
 
-    protected abstract void setStatusPanel(boolean isPositive, boolean isComplete);
+    protected abstract void setStatusPanel(boolean isPositive, boolean isComplete, boolean isLocked);
+
+    protected abstract void executePayment();
 
     protected abstract PaymentInfo getDefaultPayment(double total);
 
@@ -137,6 +164,17 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 
     protected void setAddEnabled(boolean value) {
         m_jButtonAdd.setEnabled(value);
+    }
+
+    protected void setWindowLocked(boolean value){
+        
+        m_jButtonCancel.setEnabled(value);
+        m_bIsCloseable = value;
+        m_jTabPayment.setEnabled(value);
+    }
+
+    protected void doClickOkButton() {
+        m_jButtonOK.doClick();
     }
 
     protected void addTabPayment(JPaymentCreator jpay) {
@@ -295,6 +333,27 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         }
     }
 
+    public class JPaymentMcashCreator implements JPaymentCreator {
+
+        public JPaymentInterface createJPayment() {
+            JPaymentMcash mcash = new JPaymentMcash(app, JPaymentSelect.this);
+            addCancelButtonActionListener(mcash);
+            return mcash;
+        }
+
+        public String getKey() {
+            return "payment.mcash";
+        }
+
+        public String getLabelKey() {
+            return "tab.mcash";
+        }
+
+        public String getIconKey() {
+            return "/com/openbravo/images/mcash32.png";
+        }
+    }
+
     public class JPaymentCashRefundCreator implements JPaymentCreator {
 
         public JPaymentInterface createJPayment() {
@@ -393,9 +452,12 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         }
     }
 
-    public void setStatus(boolean isPositive, boolean isComplete) {
+    public void setStatus(boolean isPositive, boolean isComplete, boolean isLocked) {
+        setStatusPanel(isPositive, isComplete, isLocked);
+    }
 
-        setStatusPanel(isPositive, isComplete);
+    public void clickOkButton() {
+        executePayment();
     }
 
     public void setTransactionID(String tID) {
@@ -427,9 +489,14 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         m_jButtonOK = new javax.swing.JButton();
         m_jButtonCancel = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle(AppLocal.getIntString("payment.title")); // NOI18N
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         m_jLblTotalEuros1.setText(AppLocal.getIntString("label.totalcash")); // NOI18N
         jPanel4.add(m_jLblTotalEuros1);
@@ -537,8 +604,8 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 
         getContentPane().add(jPanel5, java.awt.BorderLayout.SOUTH);
 
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-672)/2, (screenSize.height-497)/2, 672, 497);
+        setSize(new java.awt.Dimension(672, 497));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void m_jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonRemoveActionPerformed
@@ -550,7 +617,15 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 
     private void m_jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonAddActionPerformed
 
-        PaymentInfo returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();
+        PaymentInfo returnPayment = null;
+        try {
+            returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "En feil oppstod ved utføring av betaling:" + System.getProperty("line.separator") + ex.getMessage(),
+                    "En feil oppstod", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(JPaymentSelect.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (returnPayment != null) {
             m_aPaymentInfo.add(returnPayment);
             printState();
@@ -571,14 +646,21 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         Pattern cardPattern = Pattern.compile("(0){6}");
         Matcher cardMatch = cardPattern.matcher(((JPaymentInterface) m_jTabPayment.getSelectedComponent()).getInputString());
         if (!cardMatch.find()) {
-            PaymentInfo returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();
+            PaymentInfo returnPayment = null;
+            try {
+                returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "En feil oppstod ved utføring av betaling:" + System.getProperty("line.separator") + ex.getMessage(),
+                        "En feil oppstod", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(JPaymentSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (returnPayment != null) {
                 m_aPaymentInfo.add(returnPayment);
                 accepted = true;
                 dispose();
             }
-        }
-        else {
+        } else {
             JOptionPane.showMessageDialog(this, AppLocal.getIntString("message.iscardwarning"), "Advarsel", JOptionPane.WARNING_MESSAGE);
             dispose();
         }
@@ -590,7 +672,7 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
     }
 
     private void m_jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonCancelActionPerformed
-
+        fireCancelButtonActionEvent();
         dispose();
 
     }//GEN-LAST:event_m_jButtonCancelActionPerformed
@@ -598,6 +680,13 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
     private void m_jButtonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonPrintActionPerformed
         setPrintSelected(m_jButtonPrint.isSelected());
     }//GEN-LAST:event_m_jButtonPrintActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if(!m_bIsCloseable) return;
+        fireCancelButtonActionEvent();
+        dispose();
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

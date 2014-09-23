@@ -49,7 +49,7 @@ public class PaymentPanelBasic extends javax.swing.JPanel implements PaymentPane
                 ? AppLocal.getIntString("message.paymentgatewayext")
                 : AppLocal.getIntString("message.paymentgatewayextrefund"));
         
-        m_notifier.setStatus(true, true);            
+        m_notifier.setStatus(true, true, true);            
     }
     
     public PaymentInfoMagcard getPaymentInfoMagcard() {

@@ -71,7 +71,7 @@ public class PaymentPanelMagCard extends javax.swing.JPanel implements PaymentPa
     
     private void resetState() {
         
-        m_notifier.setStatus(false, false);  
+        m_notifier.setStatus(false, false, true);  
               
         m_jHolderName.setText(null);
         m_jCardNumber.setText(null);
@@ -120,7 +120,7 @@ public class PaymentPanelMagCard extends javax.swing.JPanel implements PaymentPa
             track1 = m_cardreader.getMagCard().getTrack1();
             track2 = m_cardreader.getMagCard().getTrack2();
             track3 = m_cardreader.getMagCard().getTrack3();
-            m_notifier.setStatus(true, true);  
+            m_notifier.setStatus(true, true, true);  
         } else {
             m_jHolderName.setText(null);
             m_jCardNumber.setText(null);
@@ -128,7 +128,7 @@ public class PaymentPanelMagCard extends javax.swing.JPanel implements PaymentPa
             track1 = null;
             track3 = null;
             track3 = null;
-            m_notifier.setStatus(false, false);  
+            m_notifier.setStatus(false, false, true);  
         }      
     }    
     

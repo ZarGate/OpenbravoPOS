@@ -191,5 +191,17 @@ public class AppConfig implements AppProperties {
         m_propsconfig.setProperty("paper.standard.mediasizename", "A4");
 
         m_propsconfig.setProperty("machine.uniqueinstance", "false");
+        
+        // Properties for mCASH
+        m_propsconfig.setProperty("mcash.enabled", "false");
+        m_propsconfig.setProperty("mcash.baseuri", "https://api.mca.sh/merchant/v1");
+        m_propsconfig.setProperty("mcash.merchantid", "");
+        m_propsconfig.setProperty("mcash.merchantuserid", "");
+        m_propsconfig.setProperty("mcash.posid", getLocalHostName());
+        m_propsconfig.setProperty("mcash.authkey", "");
+        m_propsconfig.setProperty("mcash.authmethod", "SECRET");
+        m_propsconfig.setProperty("mcash.serialnumber", "");
+        m_propsconfig.setProperty("mcash.testbedtoken", "");
+        m_propsconfig.setProperty("mcash.ledger", "default");
     }
 }
