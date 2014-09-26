@@ -69,7 +69,8 @@ public class JRootApp extends JPanel implements AppView {
    
     private DeviceScale m_Scale;
     private DeviceScanner m_Scanner;
-    private DeviceTicket m_TP;   
+    private DeviceTicket m_TP;
+    private DeviceDrawer m_Drawer;
     private TicketParser m_TTP;
     
     private Map<String, BeanFactory> m_aBeanFactories;
@@ -194,7 +195,7 @@ public class JRootApp extends JPanel implements AppView {
         m_TP = new DeviceTicket(this, m_props);
         
         // Inicializamos 
-        m_TTP = new TicketParser(getDeviceTicket(), m_dlSystem);
+        m_TTP = new TicketParser(getDeviceTicket(), app.getDeviceDrawer(), m_dlSystem);
         printerStart();
         
         // Inicializamos la bascula
@@ -202,7 +203,8 @@ public class JRootApp extends JPanel implements AppView {
         
         // Inicializamos la scanpal
         m_Scanner = DeviceScannerFactory.createInstance(m_props);
-            
+        
+        m_Drawer = new DeviceDrawer(this, m_props);
         // Leemos los recursos basicos
         // BufferedImage imgicon = m_dlSystem.getResourceAsImage("Window.Logo");
         // m_jLblTitle.setIcon(imgicon == null ? null : new ImageIcon(imgicon));
@@ -263,6 +265,10 @@ public class JRootApp extends JPanel implements AppView {
     }
     public DeviceScanner getDeviceScanner() {
         return m_Scanner;
+    }
+    
+    public DeviceDrawer getDeviceDrawer() {
+        return m_Drawer;
     }
     
     public Session getSession() {
@@ -433,6 +439,7 @@ public class JRootApp extends JPanel implements AppView {
             ee.printStackTrace();
         }
     }
+
     // La accion del selector
     private class AppUserAction extends AbstractAction {
         

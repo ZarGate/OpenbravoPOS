@@ -67,7 +67,7 @@ public class JPanelCloseMoney extends JPanel implements JPanelView, BeanFactoryA
         
         m_App = app;        
         m_dlSystem = (DataLogicSystem) m_App.getBean("com.openbravo.pos.forms.DataLogicSystem");
-        m_TTP = new TicketParser(m_App.getDeviceTicket(), m_dlSystem);
+        m_TTP = new TicketParser(m_App.getDeviceTicket(), app.getDeviceDrawer(), m_dlSystem);
 
         m_jTicketTable.setDefaultRenderer(Object.class, new TableRendererBasic(
                 new Formats[] {new FormatsPayment(), Formats.CURRENCY}));

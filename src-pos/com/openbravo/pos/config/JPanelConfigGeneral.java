@@ -27,7 +27,9 @@ import com.openbravo.pos.forms.AppConfig;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.util.ReportUtils;
 import com.openbravo.pos.util.StringParser;
+import java.io.File;
 import java.util.Map;
+import javax.swing.JFileChooser;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import org.jvnet.substance.SubstanceLookAndFeel;
@@ -47,6 +49,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private ParametersConfig printer2printerparams;
 
     private ParametersConfig printer3printerparams;
+    private JFileChooser m_jDrawerExecFileChooser;
 
     /**
      * Creates new form JPanelConfigGeneral
@@ -268,6 +271,10 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         for (String name : printernames) {
             cboPrinters.addItem(name);
         }
+
+        jcboMachineDrawer.addItem("printer");
+        jcboMachineDrawer.addItem("executable");
+        jcboMachineDrawer.addItem("Not defined");
     }
 
     public boolean hasChanged() {
@@ -396,6 +403,14 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         cboPrinters.setSelectedItem(config.getProperty("machine.printername"));
 
+        
+        p = new StringParser(config.getProperty("machine.drawer"));
+        sparam = p.nextToken(':');
+        jcboMachineDrawer.setSelectedItem(sparam);
+        if ("executable".equals(sparam)) {
+            m_jtxtDrawerExecFile.setText(p.nextToken(','));
+        }
+
         dirty.setDirty(false);
     }
 
@@ -476,6 +491,14 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         }
 
         config.setProperty("machine.printername", comboValue(cboPrinters.getSelectedItem()));
+        
+        // Drawer
+        String sMachineDrawer = comboValue(jcboMachineDrawer.getSelectedItem());
+        if ("executable".equals(sMachineDrawer)) {
+            config.setProperty("machine.drawer", sMachineDrawer + ":" + m_jtxtDrawerExecFile.getText());
+        } else {
+            config.setProperty("machine.drawer", sMachineDrawer);
+        }
 
         dirty.setDirty(false);
     }
@@ -644,6 +667,14 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         jPanel19 = new javax.swing.JPanel();
         jlblPrinterPort5 = new javax.swing.JLabel();
         jcboSerialScanner = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jcboMachineDrawer = new javax.swing.JComboBox();
+        m_jDrawerParams = new javax.swing.JPanel();
+        jPanel20 = new javax.swing.JPanel();
+        jPanel23 = new javax.swing.JPanel();
+        m_jtxtDrawerExecFile = new javax.swing.JTextField();
+        jLabel37 = new javax.swing.JLabel();
+        jbtnDrawerChooseExec = new javax.swing.JButton();
 
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder(AppLocal.getIntString("Label.CashMachine"))); // NOI18N
 
@@ -685,7 +716,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblDisplayPort, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -711,7 +742,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jtxtJPOSName, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(307, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -754,7 +785,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblPrinterPort, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -786,7 +817,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jtxtJPOSDrawer, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -818,7 +849,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel34)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(m_jtxtEPOSPrinterID, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
         jPanel18Layout.setVerticalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -865,7 +896,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblPrinterPort2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialPrinter2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -897,7 +928,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jtxtJPOSDrawer2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -929,7 +960,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel32)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(m_jtxtEPOSPrinterID2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -990,7 +1021,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblPrinterPort3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialPrinter3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1022,7 +1053,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jtxtJPOSDrawer3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1054,7 +1085,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jLabel30)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(m_jtxtEPOSPrinterID3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1085,7 +1116,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblPrinterPort4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialScale, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(307, Short.MAX_VALUE))
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1114,7 +1145,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                 .addComponent(jlblPrinterPort5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboSerialScanner, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(307, Short.MAX_VALUE))
         );
         jPanel19Layout.setVerticalGroup(
             jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1126,6 +1157,53 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
         );
 
         m_jScannerParams.add(jPanel19, "comm");
+
+        jLabel3.setText(AppLocal.getIntString("label.drawer")); // NOI18N
+
+        jcboMachineDrawer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcboMachineDrawerActionPerformed(evt);
+            }
+        });
+
+        m_jDrawerParams.setPreferredSize(new java.awt.Dimension(484, 155));
+        m_jDrawerParams.setLayout(new java.awt.CardLayout());
+        m_jDrawerParams.add(jPanel20, "empty");
+
+        jLabel37.setText(AppLocal.getIntString("label.drawer.filepath")); // NOI18N
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("pos_messages"); // NOI18N
+        jbtnDrawerChooseExec.setText(bundle.getString("button.drawer.choosefile")); // NOI18N
+        jbtnDrawerChooseExec.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnDrawerChooseExecActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel23Layout = new javax.swing.GroupLayout(jPanel23);
+        jPanel23.setLayout(jPanel23Layout);
+        jPanel23Layout.setHorizontalGroup(
+            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel23Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(m_jtxtDrawerExecFile, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnDrawerChooseExec, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel23Layout.setVerticalGroup(
+            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel23Layout.createSequentialGroup()
+                .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(m_jtxtDrawerExecFile, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel37)
+                    .addComponent(jbtnDrawerChooseExec, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(222, 222, 222))
+        );
+
+        m_jDrawerParams.add(jPanel23, "exec");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -1151,7 +1229,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jcboMachinePrinter2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(m_jPrinterParams2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(m_jPrinterParams2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1177,21 +1255,30 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(m_jScannerParams, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtxtMachineHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtxtMachineHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jcboLAF, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jcboMachineScreenmode, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jcboTicketsBag, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jcboLAF, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcboMachineDrawer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jcboMachineScreenmode, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jcboTicketsBag, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(m_jDrawerParams, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
@@ -1253,7 +1340,13 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(cboPrinters, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(m_jScannerParams, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(m_jScannerParams, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jcboMachineDrawer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(m_jDrawerParams, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1270,8 +1363,8 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1354,6 +1447,33 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
             cl.show(m_jPrinterParams1, "empty");
         }
     }//GEN-LAST:event_jcboMachinePrinterActionPerformed
+
+    private void jbtnDrawerChooseExecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDrawerChooseExecActionPerformed
+        File current = null;
+        try {
+            current = new File(m_jtxtDrawerExecFile.getText());
+        } catch (Exception e) {
+        }
+        if (current != null) {
+            m_jDrawerExecFileChooser = new JFileChooser(current);
+        } else {
+            m_jDrawerExecFileChooser = new JFileChooser();
+        }
+        if(m_jDrawerExecFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+            m_jtxtDrawerExecFile.setText(m_jDrawerExecFileChooser.getSelectedFile().getAbsolutePath());
+        }
+    }//GEN-LAST:event_jbtnDrawerChooseExecActionPerformed
+
+    private void jcboMachineDrawerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboMachineDrawerActionPerformed
+        CardLayout cl = (CardLayout) (m_jDrawerParams.getLayout());
+
+        if ("executable".equals(jcboMachineDrawer.getSelectedItem())) {
+            cl.show(m_jDrawerParams, "exec");
+        } else {
+            cl.show(m_jDrawerParams, "empty");
+        }
+    }//GEN-LAST:event_jcboMachineDrawerActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboPrinters;
     private javax.swing.JLabel jLabel1;
@@ -1372,11 +1492,13 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -1392,6 +1514,8 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel23;
     private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1400,12 +1524,14 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JButton jbtnDrawerChooseExec;
     private javax.swing.JComboBox jcboConnDisplay;
     private javax.swing.JComboBox jcboConnPrinter;
     private javax.swing.JComboBox jcboConnPrinter2;
     private javax.swing.JComboBox jcboConnPrinter3;
     private javax.swing.JComboBox jcboLAF;
     private javax.swing.JComboBox jcboMachineDisplay;
+    private javax.swing.JComboBox jcboMachineDrawer;
     private javax.swing.JComboBox jcboMachinePrinter;
     private javax.swing.JComboBox jcboMachinePrinter2;
     private javax.swing.JComboBox jcboMachinePrinter3;
@@ -1431,11 +1557,13 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
     private javax.swing.JLabel jlblPrinterPort5;
     private javax.swing.JTextField jtxtMachineHostname;
     private javax.swing.JPanel m_jDisplayParams;
+    private javax.swing.JPanel m_jDrawerParams;
     private javax.swing.JPanel m_jPrinterParams1;
     private javax.swing.JPanel m_jPrinterParams2;
     private javax.swing.JPanel m_jPrinterParams3;
     private javax.swing.JPanel m_jScaleParams;
     private javax.swing.JPanel m_jScannerParams;
+    private javax.swing.JTextField m_jtxtDrawerExecFile;
     private javax.swing.JTextField m_jtxtEPOSPrinterID;
     private javax.swing.JTextField m_jtxtEPOSPrinterID2;
     private javax.swing.JTextField m_jtxtEPOSPrinterID3;

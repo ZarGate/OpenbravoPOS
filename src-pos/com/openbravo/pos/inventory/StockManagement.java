@@ -74,7 +74,7 @@ public class StockManagement extends JPanel implements JPanelView {
         m_App = app;
         m_dlSystem = (DataLogicSystem) m_App.getBean("com.openbravo.pos.forms.DataLogicSystem");
         m_dlSales = (DataLogicSales) m_App.getBean("com.openbravo.pos.forms.DataLogicSales");
-        m_TTP = new TicketParser(m_App.getDeviceTicket(), m_dlSystem);
+        m_TTP = new TicketParser(m_App.getDeviceTicket(), app.getDeviceDrawer(), m_dlSystem);
 
         initComponents();
         

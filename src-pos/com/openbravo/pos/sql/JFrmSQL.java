@@ -28,6 +28,7 @@ import com.openbravo.data.gui.JMessageDialog;
 import com.openbravo.data.gui.MessageInf;
 import com.openbravo.data.loader.Session;
 import com.openbravo.pos.forms.*;
+import com.openbravo.pos.printer.DeviceDrawer;
 import com.openbravo.pos.printer.DeviceTicket;
 import com.openbravo.pos.scale.DeviceScale;
 import com.openbravo.pos.scanpal2.DeviceScanner;
@@ -91,6 +92,10 @@ public class JFrmSQL extends javax.swing.JFrame implements AppView {
     }
     
     public DeviceTicket getDeviceTicket() {
+        return null;
+    }
+    
+    public DeviceDrawer getDeviceDrawer() {
         return null;
     }
 

@@ -33,6 +33,7 @@ public interface AppView {
     
     public DeviceScale getDeviceScale();
     public DeviceTicket getDeviceTicket();
+    public DeviceDrawer getDeviceDrawer();
     public DeviceScanner getDeviceScanner();
       
     public Session getSession();

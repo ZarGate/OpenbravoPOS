@@ -136,7 +136,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         m_ticketlines = new JTicketLines(dlSystem.getResourceAsXML("Ticket.Line"));
         m_jPanelCentral.add(m_ticketlines, java.awt.BorderLayout.CENTER);
 
-        m_TTP = new TicketParser(m_App.getDeviceTicket(), dlSystem);
+        m_TTP = new TicketParser(m_App.getDeviceTicket(), app.getDeviceDrawer(), dlSystem);
 
         // Los botones configurables...
         m_jbtnconfig = new JPanelButtons("Ticket.Buttons", this);

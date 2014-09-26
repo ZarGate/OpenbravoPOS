@@ -79,7 +79,7 @@ public class CustomersPayment extends javax.swing.JPanel implements JPanelView, 
         dlcustomers = (DataLogicCustomers) app.getBean("com.openbravo.pos.customers.DataLogicCustomers");
         dlsales = (DataLogicSales) app.getBean("com.openbravo.pos.forms.DataLogicSales");
         dlsystem = (DataLogicSystem) app.getBean("com.openbravo.pos.forms.DataLogicSystem");
-        ttp = new TicketParser(app.getDeviceTicket(), dlsystem);
+        ttp = new TicketParser(app.getDeviceTicket(), app.getDeviceDrawer(), dlsystem);
     }
 
     public Object getBean() {

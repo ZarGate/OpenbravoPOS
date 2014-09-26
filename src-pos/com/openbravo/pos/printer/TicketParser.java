@@ -30,6 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import com.openbravo.pos.forms.DataLogicSystem;
+import com.openbravo.pos.util.StringParser;
 
 public class TicketParser extends DefaultHandler {
     
@@ -37,6 +38,7 @@ public class TicketParser extends DefaultHandler {
     
     private DeviceTicket m_printer;
     private DataLogicSystem m_system;
+    private DeviceDrawer m_drawer;
     
     private StringBuffer text;
     
@@ -64,9 +66,10 @@ public class TicketParser extends DefaultHandler {
     
     
     /** Creates a new instance of TicketParser */
-    public TicketParser(DeviceTicket printer, DataLogicSystem system) {
+    public TicketParser(DeviceTicket printer, DeviceDrawer drawer, DataLogicSystem system) {
         m_printer = printer;
         m_system = system;
+        m_drawer = drawer;
     }
     
     public void printTicket(String sIn) throws TicketPrinterException {
@@ -116,7 +119,13 @@ public class TicketParser extends DefaultHandler {
         switch (m_iOutputType) {
         case OUTPUT_NONE:
             if ("opendrawer".equals(qName)) {
-                m_printer.getDevicePrinter(readString(attributes.getValue("printer"), "1")).openDrawer();
+                if(m_drawer != null){
+                    if("executable".equals(m_drawer.getType())){
+                        m_drawer.openDrawer(null);
+                    } else if("printer".equals(m_drawer.getType())) {
+                        m_printer.getDevicePrinter(readString(attributes.getValue("printer"), "1")).openDrawer();
+                    }
+                }
             } else if ("play".equals(qName)) {
                  text = new StringBuffer();    
             } else if ("ticket".equals(qName)) {

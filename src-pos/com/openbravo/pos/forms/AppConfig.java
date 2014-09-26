@@ -167,6 +167,7 @@ public class AppConfig implements AppProperties {
         m_propsconfig.setProperty("machine.screenmode", "window"); // fullscreen / window
         m_propsconfig.setProperty("machine.ticketsbag", "standard");
         m_propsconfig.setProperty("machine.scanner", "Not defined");
+        m_propsconfig.setProperty("machine.drawer", "Not defined");
         
         m_propsconfig.setProperty("payment.gateway", "external");
         m_propsconfig.setProperty("payment.magcardreader", "Not defined");

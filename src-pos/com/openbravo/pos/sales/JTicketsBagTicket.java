@@ -66,8 +66,8 @@ public class JTicketsBagTicket extends JTicketsBag {
         m_TP = new DeviceTicket();
    
         // Inicializo el parser de documentos de ticket
-        m_TTP = new TicketParser(m_TP, m_dlSystem); // para visualizar el ticket
-        m_TTP2 = new TicketParser(m_App.getDeviceTicket(), m_dlSystem); // para imprimir el ticket
+        m_TTP = new TicketParser(m_TP, null, m_dlSystem); // para visualizar el ticket
+        m_TTP2 = new TicketParser(m_App.getDeviceTicket(), app.getDeviceDrawer(), m_dlSystem); // para imprimir el ticket
         
         initComponents();
         
