@@ -195,7 +195,7 @@ public class JRootApp extends JPanel implements AppView {
         m_TP = new DeviceTicket(this, m_props);
         
         // Inicializamos 
-        m_TTP = new TicketParser(getDeviceTicket(), app.getDeviceDrawer(), m_dlSystem);
+        m_TTP = new TicketParser(getDeviceTicket(), getDeviceDrawer(), m_dlSystem);
         printerStart();
         
         // Inicializamos la bascula
