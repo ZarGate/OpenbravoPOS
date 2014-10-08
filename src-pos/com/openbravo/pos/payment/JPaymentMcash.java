@@ -114,10 +114,10 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
 
     public void shortlinkScanned(ShortlinkLastScan sls) {
         addItemToJList("Scanning mottatt!", m_jListInfo);
-        if (sls.id != null) {
-            addItemToJList("Trykk OK for å fullføre betaling.", m_jListInfo);
+        if (sls.id != null){
+            addItemToJList("Fullfører automatisk betaling.", m_jListInfo);
             m_shortlinkLastScan = sls;
-            m_jButtonExecutePayment.setEnabled(true);
+            executeMCashPayment();
         } else {
             addItemToJList("Noe feilet, prøv igjen.", m_jListInfo);
             resetButtonsState();
@@ -129,7 +129,7 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
     private void executeMCashPayment() {
         m_iTicketTriesCounter++;
         String tempTicketID = m_sTicketID + "-" + m_iTicketTriesCounter;
-        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null);
+        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null, true);
         if (m_resourceId == null || m_resourceId.id == null) {
             addItemToJList("Kunne ikke opprette betaling, prøv igjen.", m_jListInfo);
             resetButtonsState();
@@ -138,7 +138,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         addItemToJList("Kjører betaling, vennligst vent.", m_jListInfo);
         m_mCashClient.addPaymentFinishedEventListener(this);
         m_mCashClient.startPaymentFinishedListener(m_resourceId.id);
-        m_jButtonExecutePayment.setEnabled(false);
         m_notifier.setStatus(false, false, false);
 
     }
@@ -234,7 +233,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
 
     private void resetButtonsState() {
         m_jButtonCancelPayment.setEnabled(false);
-        m_jButtonExecutePayment.setEnabled(false);
         m_jButtonStartPayment.setEnabled(true);
     }
 
@@ -255,7 +253,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         m_jListInfo = new javax.swing.JList();
         m_jButtonStartPayment = new javax.swing.JButton();
         m_jButtonCancelPayment = new javax.swing.JButton();
-        m_jButtonExecutePayment = new javax.swing.JButton();
 
         m_jScrollPane.setPreferredSize(new java.awt.Dimension(150, 100));
 
@@ -288,19 +285,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
             }
         });
 
-        m_jButtonExecutePayment.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/apply.png"))); // NOI18N
-        m_jButtonExecutePayment.setText(AppLocal.getIntString("Button.ExecutePayment")); // NOI18N
-        m_jButtonExecutePayment.setEnabled(false);
-        m_jButtonExecutePayment.setFocusPainted(false);
-        m_jButtonExecutePayment.setFocusable(false);
-        m_jButtonExecutePayment.setMargin(new java.awt.Insets(8, 16, 8, 16));
-        m_jButtonExecutePayment.setRequestFocusEnabled(false);
-        m_jButtonExecutePayment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                m_jButtonExecutePaymentActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -309,7 +293,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(m_jButtonStartPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(m_jButtonExecutePayment, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(m_jButtonCancelPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
@@ -323,9 +306,7 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
                     .addComponent(m_jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(m_jButtonStartPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(m_jButtonExecutePayment, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(57, 57, 57)
                         .addComponent(m_jButtonCancelPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(145, 145, 145))
         );
@@ -335,10 +316,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         startListenForScanTokens();
     }//GEN-LAST:event_m_jButtonStartPaymentActionPerformed
 
-    private void m_jButtonExecutePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonExecutePaymentActionPerformed
-        executeMCashPayment();
-    }//GEN-LAST:event_m_jButtonExecutePaymentActionPerformed
-
     private void m_jButtonCancelPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonCancelPaymentActionPerformed
         cancelMCashPayment();
     }//GEN-LAST:event_m_jButtonCancelPaymentActionPerformed
@@ -346,7 +323,6 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton m_jButtonCancelPayment;
-    private javax.swing.JButton m_jButtonExecutePayment;
     private javax.swing.JButton m_jButtonStartPayment;
     private javax.swing.JList m_jListInfo;
     private javax.swing.JScrollPane m_jScrollPane;

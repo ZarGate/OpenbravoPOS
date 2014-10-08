@@ -604,7 +604,7 @@ public class JRootApp extends JPanel implements AppView {
         m_jPanelTitle.setLayout(new java.awt.BorderLayout());
 
         poweredby.setForeground(new java.awt.Color(153, 153, 153));
-        poweredby.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/poweredby.png"))); // NOI18N
+        poweredby.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/brennheitsmall.png"))); // NOI18N
         poweredby.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
         poweredby.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         poweredby.setOpaque(true);
