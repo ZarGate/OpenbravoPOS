@@ -543,7 +543,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
             // Codigo de barras introducido
             if (m_sBarcode.length() > 0) {
                 String sCode = m_sBarcode.toString();
-                if (sCode.startsWith("000000")) {
+                //if (sCode.startsWith("000000")) { //Old code
+                if (sCode.length() == 10) {
                     // barcode of a customers card
                     try {
                         CustomerInfoExt newcustomer = dlSales.findCustomerExt(sCode);

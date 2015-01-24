@@ -742,7 +742,7 @@ public class CustomersView extends javax.swing.JPanel implements EditorRecord {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (JOptionPane.showConfirmDialog(this, AppLocal.getIntString("message.cardnew"), AppLocal.getIntString("title.editor"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {            
-            jcard.setText("000000" + StringUtils.getCardNumber());
+            jcard.setText(StringUtils.getCardNumber());
             m_Dirty.setDirty(true);
         }
     }//GEN-LAST:event_jButton2ActionPerformed

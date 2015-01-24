@@ -1,20 +1,13 @@
 <project>
     <shortName>zargatepos</shortName>
     <fullName>ZarGate POS</fullName>
-    <version>2.40.0</version>
-    <readmeFile>../README</readmeFile>
-    <licenseFile>../licensing/gpl-3.0.txt</licenseFile>
-    <leftImage>images/left.png</leftImage>
-    <logoImage>images/icon.png</logoImage>
-    <splashImage>images/splash.png</splashImage>
+    <version>2.52.0</version>
+    <readmeFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/README</readmeFile>
+    <licenseFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/LICENSE</licenseFile>
+    <leftImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</leftImage>
+    <logoImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</logoImage>
+    <splashImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</splashImage>
     <allowLanguageSelection>1</allowLanguageSelection>
-    <description>ZarGate POS is a point of sale designed for ZarGate</description>
-    <enableRollback>1</enableRollback>
-    <outputDirectory>../build/installerpos</outputDirectory>
-    <release>4</release>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
-    <summary>POS</summary>
-    <vendor>ZarGate</vendor>
     <componentList>
         <component>
             <name>default</name>
@@ -26,46 +19,18 @@
                 <shortcut>
                     <comment>ZarGate POS is a point of sale designed for ZarGate</comment>
                     <exec>sh ${installdir}/start.sh</exec>
-                    <icon>${installdir}/openbravo-logo-128.png</icon>
+                    <icon>${installdir}/favicon.png</icon>
                     <name>ZarGate POS</name>
                     <path>${installdir}</path>
                     <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/start.bat</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon>${installdir}/openbravo-logo.ico</windowsIcon>
+                    <windowsIcon>${installdir}/zgpos_logo.ico</windowsIcon>
                     <windowsPath>${installdir}</windowsPath>
                 </shortcut>
             </desktopShortcutList>
-            <startMenuShortcutList>
-                <startMenuShortcut>
-                    <comment>ZarGate POS is a point of sale designed for ZarGate</comment>
-                    <name>ZarGate POS</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/start.bat</windowsExec>
-                    <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon>${installdir}/favicon.ico</windowsIcon>
-                    <windowsPath>${installdir}</windowsPath>
-                </startMenuShortcut>
-                <startMenuShortcut>
-                    <comment>Configure ZarGate POS</comment>
-                    <name>ZarGate POS configuration</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/configure.bat</windowsExec>
-                    <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon>${installdir}/openbravo-logo.ico</windowsIcon>
-                    <windowsPath>${installdir}</windowsPath>
-                </startMenuShortcut>
-                <startMenuShortcut>
-                    <comment>Uninstall ${product_fullname}</comment>
-                    <name>Uninstall ${product_fullname}</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
-                    <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon></windowsIcon>
-                    <windowsPath>${installdir}/</windowsPath>
-                </startMenuShortcut>
-            </startMenuShortcutList>
             <folderList>
                 <folder>
                     <description>DEB1</description>
@@ -74,7 +39,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>images/openbravopos.png</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -85,7 +50,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>zargatepos.desktop</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zargatepos.desktop</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -96,7 +61,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>zargatepos</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zargatepos</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -107,47 +72,114 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>../reports</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/reports</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>../locales</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/locales</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>../licensing</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/licensing</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>../lib</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/lib</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../build/jar/openbravopos.jar</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/dist/openbravopos.jar</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../README</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/README</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../openbravo-logo-128.png</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../favicon.ico</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.ico</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../start.bat</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/start.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../start.sh</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/start.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../configure.bat</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/configure.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../configure.sh</origin>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/configure.sh</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zgpos_logo.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Java Bin</description>
+                    <destination>${javabinfolder}</destination>
+                    <name>javabin</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/Installer/rxtxSerial.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
             </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>ZarGate POS is a point of sale designed for ZarGate</comment>
+                    <name>ZarGate POS</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/start.bat</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/zgpos_logo.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Configure ZarGate POS</comment>
+                    <name>ZarGate POS configuration</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/configure.bat</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Uninstall ${product_fullname}</comment>
+                    <name>Uninstall ${product_fullname}</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}/</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
         </component>
     </componentList>
+    <description>ZarGate POS is a point of sale designed for ZarGate</description>
+    <enableRollback>1</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>C:/Users/FilipAndreLarsen/Development/build/installerpos</outputDirectory>
+    <release>4</release>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <summary>POS</summary>
+    <vendor>brennheIT</vendor>
+    <windowsResourceFileVersion>2.50.0</windowsResourceFileVersion>
     <parameterList>
+        <directoryParameter>
+            <name>javabinfolder</name>
+            <title>Java Bin Folder</title>
+            <description>Bin folder in Java installation</description>
+            <explanation>Bin folder in Java installation</explanation>
+            <value>C:\Program Files (x86)\Java\jre7\bin</value>
+            <default>C:\Program Files (x86)\Java\jre7\bin</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <mustBeWritable>1</mustBeWritable>
+            <mustExist>1</mustExist>
+            <width>40</width>
+        </directoryParameter>
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
@@ -172,3 +204,4 @@
         </platformOptions>
     </platformOptionsList>
 </project>
+
