@@ -83,7 +83,7 @@ public class JPaymentCashPos extends javax.swing.JPanel implements JPaymentInter
         
         printState();        
     }
-    public PaymentInfo executePayment() throws Exception {
+    public PaymentInfo executePayment() {
         if (m_dPaid - m_dTotal >= 0.0) {
             // pago completo
             return new PaymentInfoCash(m_dTotal, m_dPaid);
