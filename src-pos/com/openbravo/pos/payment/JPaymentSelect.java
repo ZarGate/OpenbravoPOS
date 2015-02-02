@@ -642,10 +642,10 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
     }//GEN-LAST:event_m_jTabPaymentStateChanged
 
     private void m_jButtonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jButtonOKActionPerformed
-
+        String inputString = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).getInputString();
         Pattern cardPattern = Pattern.compile("(0){6}");
-        Matcher cardMatch = cardPattern.matcher(((JPaymentInterface) m_jTabPayment.getSelectedComponent()).getInputString());
-        if (!cardMatch.find()) {
+        Matcher cardMatch = cardPattern.matcher(inputString);
+        if (!cardMatch.find() && inputString.length() < 10) {
             PaymentInfo returnPayment = null;
             try {
                 returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();

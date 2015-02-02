@@ -83,7 +83,7 @@ public class JPaymentCashPos extends javax.swing.JPanel implements JPaymentInter
         
         printState();        
     }
-    public PaymentInfo executePayment() {
+    public PaymentInfo executePayment() throws Exception {
         if (m_dPaid - m_dTotal >= 0.0) {
             // pago completo
             return new PaymentInfoCash(m_dTotal, m_dPaid);
@@ -118,10 +118,10 @@ public class JPaymentCashPos extends javax.swing.JPanel implements JPaymentInter
         Double value = m_jTendered.getDoubleValue();
         if (value == null || value == 0.0) {
             m_dPaid = m_dTotal;
-            addToTempString(value);
         } else {            
             m_dPaid = value;
-        }   
+        }
+        addToTempString(value);
 
         int iCompare = RoundUtils.compare(m_dPaid, m_dTotal);
         
