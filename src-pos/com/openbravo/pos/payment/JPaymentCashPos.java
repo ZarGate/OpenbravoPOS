@@ -29,6 +29,7 @@ import com.openbravo.pos.forms.DataLogicSystem;
 import com.openbravo.pos.scripting.ScriptEngine;
 import com.openbravo.pos.scripting.ScriptException;
 import com.openbravo.pos.scripting.ScriptFactory;
+import com.openbravo.pos.ticket.TicketInfo;
 import com.openbravo.pos.util.RoundUtils;
 import com.openbravo.pos.util.ThumbNailBuilder;
 import java.awt.event.ActionEvent;
@@ -73,7 +74,7 @@ public class JPaymentCashPos extends javax.swing.JPanel implements JPaymentInter
         
     }
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {
         
         m_dTotal = dTotal;
         m_sTemp = "";
@@ -131,6 +132,11 @@ public class JPaymentCashPos extends javax.swing.JPanel implements JPaymentInter
                 : null); 
         
         m_notifier.setStatus(m_dPaid > 0.0, iCompare >= 0, true);
+    }
+
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return true;
     }
     
     private class RecalculateState implements PropertyChangeListener {

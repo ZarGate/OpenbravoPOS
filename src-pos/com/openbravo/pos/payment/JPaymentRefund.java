@@ -22,6 +22,7 @@ package com.openbravo.pos.payment;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import java.awt.Component;
 import com.openbravo.pos.forms.AppLocal;
+import com.openbravo.pos.ticket.TicketInfo;
 
 public class JPaymentRefund extends javax.swing.JPanel implements JPaymentInterface {
     
@@ -39,7 +40,7 @@ public class JPaymentRefund extends javax.swing.JPanel implements JPaymentInterf
         initComponents();
     }
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {
         m_dTotal = dTotal;
         
         m_notifier.setStatus(true, true, true);
@@ -54,6 +55,11 @@ public class JPaymentRefund extends javax.swing.JPanel implements JPaymentInterf
     
     public String getInputString(){
         return "";
+    }
+
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return true;
     }
     
     /** This method is called from within the constructor to

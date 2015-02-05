@@ -20,6 +20,7 @@
 package com.openbravo.pos.payment;
 
 import com.openbravo.pos.customers.CustomerInfoExt;
+import com.openbravo.pos.ticket.TicketInfo;
 import java.awt.Component;
 
 /**
@@ -28,8 +29,9 @@ import java.awt.Component;
  */
 public interface JPaymentInterface {
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transactionID);    
+    public void activate(CustomerInfoExt customerext, double dTotal, String transactionID, TicketInfo ticketInfo);    
     public PaymentInfo executePayment() throws Exception;
     public Component getComponent();
     public String getInputString();
+    public boolean IssueReceiptAsDefault();
 }

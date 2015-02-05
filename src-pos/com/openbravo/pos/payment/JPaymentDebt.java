@@ -22,6 +22,7 @@ package com.openbravo.pos.payment;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.customers.CustomerInfoExt;
+import com.openbravo.pos.ticket.TicketInfo;
 import com.openbravo.pos.util.RoundUtils;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
@@ -52,7 +53,7 @@ public class JPaymentDebt extends javax.swing.JPanel implements JPaymentInterfac
         
     }
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {
         
         // Hides fields not of use
         txtMaxdebt.setVisible(false);
@@ -108,6 +109,11 @@ public class JPaymentDebt extends javax.swing.JPanel implements JPaymentInterfac
     
     public String getInputString(){
         return m_sTemp;
+    }
+
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return true;
     }
 
     private void printState() {

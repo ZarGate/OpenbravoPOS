@@ -22,6 +22,7 @@ package com.openbravo.pos.payment;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.AppView;
+import com.openbravo.pos.ticket.TicketInfo;
 import java.awt.BorderLayout;
 import java.awt.Component;
 
@@ -56,7 +57,7 @@ public class JPaymentMagcard extends javax.swing.JPanel implements JPaymentInter
         }
     }
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {   
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {   
         this.transaction = transID;
 
         if (m_cardpanel == null) {
@@ -88,6 +89,11 @@ public class JPaymentMagcard extends javax.swing.JPanel implements JPaymentInter
     
     public String getInputString(){
         return "";
+    }
+
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return true;
     }
     
     public void setTransaction(String transid){

@@ -24,6 +24,7 @@ import java.beans.PropertyChangeListener;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.customers.CustomerInfoExt;
+import com.openbravo.pos.ticket.TicketInfo;
 import com.openbravo.pos.util.RoundUtils;
 
 public class JPaymentCheque extends javax.swing.JPanel implements JPaymentInterface {
@@ -45,7 +46,7 @@ public class JPaymentCheque extends javax.swing.JPanel implements JPaymentInterf
         m_jTendered.addEditorKeys(m_jKeys);
     }
     
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {
         
         m_dTotal = dTotal;
         
@@ -66,6 +67,11 @@ public class JPaymentCheque extends javax.swing.JPanel implements JPaymentInterf
     
     public String getInputString(){
         return m_sTemp;
+    }
+
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return true;
     }
 
     private void printState() {

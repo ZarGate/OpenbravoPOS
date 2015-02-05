@@ -24,6 +24,8 @@ import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.AppProperties;
 import com.openbravo.pos.forms.AppView;
 import com.openbravo.pos.payment.listeners.IListenForCancelButtonAction;
+import com.openbravo.pos.ticket.TicketInfo;
+import com.openbravo.pos.ticket.TicketLineInfo;
 import java.util.Date;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
@@ -62,6 +64,7 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
     private String m_mCashSerialNumber;
     private String m_mCashTestbedToken;
     private String m_mCashLedger;
+    private TicketInfo ticketInfo;
 
     /**
      * Creates new form JPaymentFree
@@ -70,22 +73,23 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         m_notifier = notifier;
         initComponents();
         AppProperties config = app.getProperties();
-        m_mCashBaseUri=config.getProperty("mcash.baseuri");
-        m_mCashMerchantId=config.getProperty("mcash.merchantid");
-        m_mCashUserId=config.getProperty("mcash.merchantuserid");
-        m_mCashPosId=config.getProperty("mcash.posid");
-        m_mCashAuthKey=config.getProperty("mcash.authkey");
-        m_mCashAuthMethod=config.getProperty("mcash.authmethod");
-        m_mCashSerialNumber=config.getProperty("mcash.serialnumber");
-        m_mCashTestbedToken=config.getProperty("mcash.testbedtoken");
-        if(m_mCashTestbedToken.equals("")){
+        m_mCashBaseUri = config.getProperty("mcash.baseuri");
+        m_mCashMerchantId = config.getProperty("mcash.merchantid");
+        m_mCashUserId = config.getProperty("mcash.merchantuserid");
+        m_mCashPosId = config.getProperty("mcash.posid");
+        m_mCashAuthKey = config.getProperty("mcash.authkey");
+        m_mCashAuthMethod = config.getProperty("mcash.authmethod");
+        m_mCashSerialNumber = config.getProperty("mcash.serialnumber");
+        m_mCashTestbedToken = config.getProperty("mcash.testbedtoken");
+        if (m_mCashTestbedToken.equals("")) {
             m_mCashTestbedToken = null;
         }
-        m_mCashLedger=config.getProperty("mcash.ledger");
-        
+        m_mCashLedger = config.getProperty("mcash.ledger");
+
     }
 
-    public void activate(CustomerInfoExt customerext, double dTotal, String transID) {
+    public void activate(CustomerInfoExt customerext, double dTotal, String transID, TicketInfo ticketInfo) {
+        this.ticketInfo = ticketInfo;
         m_dTotal = dTotal;
         m_notifier.setStatus(false, false, true);
         m_sTicketID = transID;
@@ -112,9 +116,14 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         return "";
     }
 
+    @Override
+    public boolean IssueReceiptAsDefault() {
+        return false;
+    }
+
     public void shortlinkScanned(ShortlinkLastScan sls) {
         addItemToJList("Scanning mottatt!", m_jListInfo);
-        if (sls.id != null){
+        if (sls.id != null) {
             addItemToJList("Fullfører automatisk betaling.", m_jListInfo);
             m_shortlinkLastScan = sls;
             executeMCashPayment();
@@ -126,10 +135,43 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         m_notifier.setStatus(false, false, true);
     }
 
+    private String buildTempReceiptForPaymentRequest(TicketInfo ticketInfo) {
+        StringBuilder builder = new StringBuilder();
+        if (ticketInfo != null && ticketInfo.getLines() != null && ticketInfo.getLines().size() > 0) {
+            for(TicketLineInfo l : ticketInfo.getLines()){
+                builder.append(l.getMultiply());
+                builder.append(" x ");
+                builder.append(l.getProductName());
+                builder.append(" = kr ");
+                builder.append(l.getMultiply() * l.getPrice());
+                builder.append(System.getProperty("line.separator"));
+            }
+        }
+        return builder.toString();
+    }
+
+    private String buildFinalReceiptForPaymentRequest(TicketInfo ticketInfo) {
+        StringBuilder builder = new StringBuilder();
+        if (ticketInfo != null && ticketInfo.getLines() != null && ticketInfo.getLines().size() > 0) {
+            builder.append("Ordrenr: ");
+            builder.append(ticketInfo.getTicketId());
+            builder.append(System.getProperty("line.separator"));
+            for(TicketLineInfo l : ticketInfo.getLines()){
+                builder.append(l.getMultiply());
+                builder.append(" x ");
+                builder.append(l.getProductName());
+                builder.append(" = kr ");
+                builder.append(l.getMultiply() * l.getPrice());
+                builder.append(System.getProperty("line.separator"));
+            }
+        }
+        return builder.toString();
+    }
+
     private void executeMCashPayment() {
         m_iTicketTriesCounter++;
         String tempTicketID = m_sTicketID + "-" + m_iTicketTriesCounter;
-        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null, true);
+        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null, true, buildTempReceiptForPaymentRequest(ticketInfo));
         if (m_resourceId == null || m_resourceId.id == null) {
             addItemToJList("Kunne ikke opprette betaling, prøv igjen.", m_jListInfo);
             resetButtonsState();
@@ -179,10 +221,10 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
                 m_mCashMerchantId, m_mCashUserId, m_mCashAuthKey, m_mCashAuthMethod,
                 m_mCashPosId, m_mCashLedger, m_mCashTestbedToken);
         ResourceId shortlink = m_mCashClient.createShortlink(m_mCashSerialNumber, null);
-        if(shortlink == null || shortlink.id == null){
+        if (shortlink == null || shortlink.id == null) {
             JOptionPane.showMessageDialog(this,
-                        "En feil oppstod ved oppretting av mCASH Shortlink. Kontakt crew.",
-                        "En feil oppstod", JOptionPane.ERROR_MESSAGE);
+                    "En feil oppstod ved oppretting av mCASH Shortlink. Kontakt crew.",
+                    "En feil oppstod", JOptionPane.ERROR_MESSAGE);
             resetButtonsState();
             closeMCash();
             return;
