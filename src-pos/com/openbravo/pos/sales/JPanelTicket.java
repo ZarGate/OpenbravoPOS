@@ -34,6 +34,7 @@ import com.openbravo.pos.panels.JProductFinder;
 import com.openbravo.pos.scale.ScaleException;
 import com.openbravo.pos.payment.JPaymentSelect;
 import com.openbravo.basic.BasicException;
+import com.openbravo.data.gui.JMessageDialog;
 import com.openbravo.data.gui.ListKeyed;
 import com.openbravo.data.loader.SentenceList;
 import com.openbravo.pos.customers.CustomerInfoExt;
@@ -63,6 +64,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
 import javax.print.PrintService;
 import net.brennheit.mcashapi.MCashClient;
 import net.brennheit.mcashapi.resource.DateTime;
@@ -142,7 +144,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         m_ticketlines = new JTicketLines(dlSystem.getResourceAsXML("Ticket.Line"));
         m_jPanelCentral.add(m_ticketlines, java.awt.BorderLayout.CENTER);
 
-        m_TTP = new TicketParser(m_App.getDeviceTicket(), app.getDeviceDrawer(), dlSystem);
+        m_TTP = new TicketParser(m_App.getDeviceTicket(), m_App.getDeviceDrawer(), dlSystem);
 
         // Los botones configurables...
         m_jbtnconfig = new JPanelButtons("Ticket.Buttons", this);
@@ -881,7 +883,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                         ticket.setActiveCash(m_App.getActiveCashIndex());
                         ticket.setDate(new Date()); // Le pongo la fecha de cobro
 
-                       if (executeEvent(ticket, ticketext, "ticket.save") == null) {
+                        if (executeEvent(ticket, ticketext, "ticket.save") == null) {
                             // Save the receipt and assign a receipt number
                             try {
                                 dlSales.saveTicket(ticket, m_App.getInventoryLocation());
@@ -946,27 +948,41 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
     }
 
     private void printTicket(String sresourcename, TicketInfo ticket, Object ticketext) {
+        boolean retry;
+        boolean error;
+        do {
+            retry = false;
+            error = false;
+            String sresource = dlSystem.getResourceAsXML(sresourcename);
+            if (sresource == null) {
+                MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"));
+                msg.show(JPanelTicket.this);
+            } else {
+                try {
+                    ScriptEngine script = ScriptFactory.getScriptEngine(ScriptFactory.VELOCITY);
+                    script.put("taxes", taxcollection);
+                    script.put("taxeslogic", taxeslogic);
+                    script.put("ticket", ticket);
+                    script.put("place", ticketext);
 
-        String sresource = dlSystem.getResourceAsXML(sresourcename);
-        if (sresource == null) {
-            MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"));
-            msg.show(JPanelTicket.this);
-        } else {
-            try {
-                ScriptEngine script = ScriptFactory.getScriptEngine(ScriptFactory.VELOCITY);
-                script.put("taxes", taxcollection);
-                script.put("taxeslogic", taxeslogic);
-                script.put("ticket", ticket);
-                script.put("place", ticketext);
-                m_TTP.printTicket(script.eval(sresource).toString());
-            } catch (ScriptException e) {
-                MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"), e);
-                msg.show(JPanelTicket.this);
-            } catch (TicketPrinterException e) {
-                MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"), e);
-                msg.show(JPanelTicket.this);
+                    (new TicketParser(m_App.getDeviceTicket(), m_App.getDeviceDrawer(), dlSystem)).printTicket(script.eval(sresource).toString());
+                } catch (ScriptException e) {
+                    MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"), e);
+                    msg.show(JPanelTicket.this);
+                    error = true;
+                } catch (TicketPrinterException e) {
+                    MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotprintticket"), e);
+                    msg.show(JPanelTicket.this);
+                    error = true;
+                }
             }
-        }
+            if (error && sresourcename.equals("Printer.Kitchen")) {
+                if (JOptionPane.showConfirmDialog(JPanelTicket.this, AppLocal.getIntString("message.cannotkitchenprint"), AppLocal.getIntString("message.cannotprintticket"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    sresourcename = "Printer.KitchenBackup";
+                    retry = true;
+                }
+            }
+        } while (retry);
     }
 
     private void printReport(String resourcefile, TicketInfo ticket, Object ticketext) {
@@ -1058,7 +1074,15 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
     }
 
     public void printTicket(String resource) {
-        printTicket(resource, m_oTicket, m_oTicketExt);
+        final String execResource = resource;
+        final TicketInfo execTicketInfo = m_oTicket;
+        final Object execTicketExt = m_oTicketExt;
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                printTicket(execResource, execTicketInfo, execTicketExt);
+            }
+        });
     }
 
     private Object executeEventAndRefresh(String eventkey, ScriptArg... args) {

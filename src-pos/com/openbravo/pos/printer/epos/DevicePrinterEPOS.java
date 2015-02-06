@@ -87,7 +87,7 @@ public class DevicePrinterEPOS implements DevicePrinter {
     public void reset() {
     }
 
-    public void beginReceipt() {
+    public void beginReceipt() throws Exception {
         URL url;
         try {
             url = new URL(getPrinterURL());
@@ -105,6 +105,7 @@ public class DevicePrinterEPOS implements DevicePrinter {
             m_out.writeDefaultNamespace(m_eposXmlNamespace);
         } catch (Exception ex) {
             Logger.getLogger(DevicePrinterEPOS.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
     }
 
@@ -225,9 +226,6 @@ public class DevicePrinterEPOS implements DevicePrinter {
     }
 
     public void printText(int iStyle, String sText) {
-        if (m_out == null) {
-            return;
-        }
         try {
             m_out.writeStartElement("text");
             m_out.writeAttribute("align", "left");
@@ -265,6 +263,9 @@ public class DevicePrinterEPOS implements DevicePrinter {
     }
 
     public void endReceipt() {
+        if (m_out == null) {
+            return;
+        }
         try {
             m_out.writeEmptyElement("cut");
             m_out.writeEndElement();
@@ -300,7 +301,7 @@ public class DevicePrinterEPOS implements DevicePrinter {
         m_out = null;
     }
 
-    public void openDrawer() {
+    public void openDrawer() throws Exception{
         beginReceipt();
         if (m_out == null) {
             return;
