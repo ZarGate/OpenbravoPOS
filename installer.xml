@@ -1,7 +1,7 @@
 <project>
     <shortName>zargatepos</shortName>
     <fullName>ZarGate POS</fullName>
-    <version>2.53.0</version>
+    <version>2.54.0</version>
     <readmeFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/README</readmeFile>
     <licenseFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/LICENSE</licenseFile>
     <leftImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</leftImage>

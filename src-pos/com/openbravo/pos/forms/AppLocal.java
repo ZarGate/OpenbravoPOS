@@ -29,7 +29,7 @@ public class AppLocal {
     
     public static final String APP_NAME = "Zargate POS";
     public static final String APP_ID = "openbravopos";
-    public static final String APP_VERSION = "2.53.0";
+    public static final String APP_VERSION = "2.54.0";
   
     // private static List<ResourceBundle> m_messages;
     private static LocaleResources m_resources;
