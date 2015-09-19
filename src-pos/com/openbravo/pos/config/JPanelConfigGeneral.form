@@ -469,6 +469,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JComboBox" name="jcboConnPrinter">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="JPanelConfigGeneral_jcboConnPrinter"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jlblPrinterPort">
                   <Properties>

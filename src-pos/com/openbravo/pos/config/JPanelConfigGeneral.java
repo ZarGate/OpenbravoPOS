@@ -152,6 +152,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         jcboConnPrinter.addItem("serial");
         jcboConnPrinter.addItem("file");
+        jcboConnPrinter.addItem("tcp");
 
         jcboSerialPrinter.addItem("COM1");
         jcboSerialPrinter.addItem("COM2");
@@ -178,6 +179,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         jcboConnPrinter2.addItem("serial");
         jcboConnPrinter2.addItem("file");
+        jcboConnPrinter2.addItem("tcp");
 
         jcboSerialPrinter2.addItem("COM1");
         jcboSerialPrinter2.addItem("COM2");
@@ -204,6 +206,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         jcboConnPrinter3.addItem("serial");
         jcboConnPrinter3.addItem("file");
+        jcboConnPrinter3.addItem("tcp");
 
         jcboSerialPrinter3.addItem("COM1");
         jcboSerialPrinter3.addItem("COM2");
@@ -305,7 +308,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         StringParser p = new StringParser(config.getProperty("machine.printer"));
         String sparam = unifySerialInterface(p.nextToken(':'));
-        if ("serial".equals(sparam) || "file".equals(sparam)) {
+        if ("serial".equals(sparam) || "file".equals(sparam) || "tcp".equals(sparam)) {
             jcboMachinePrinter.setSelectedItem("epson");
             jcboConnPrinter.setSelectedItem(sparam);
             jcboSerialPrinter.setSelectedItem(p.nextToken(','));
@@ -328,7 +331,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         p = new StringParser(config.getProperty("machine.printer.2"));
         sparam = unifySerialInterface(p.nextToken(':'));
-        if ("serial".equals(sparam) || "file".equals(sparam)) {
+        if ("serial".equals(sparam) || "file".equals(sparam) || "tcp".equals(sparam)) {
             jcboMachinePrinter2.setSelectedItem("epson");
             jcboConnPrinter2.setSelectedItem(sparam);
             jcboSerialPrinter2.setSelectedItem(p.nextToken(','));
@@ -351,7 +354,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         p = new StringParser(config.getProperty("machine.printer.3"));
         sparam = unifySerialInterface(p.nextToken(':'));
-        if ("serial".equals(sparam) || "file".equals(sparam)) {
+        if ("serial".equals(sparam) || "file".equals(sparam) || "tcp".equals(sparam)) {
             jcboMachinePrinter3.setSelectedItem("epson");
             jcboConnPrinter3.setSelectedItem(sparam);
             jcboSerialPrinter3.setSelectedItem(p.nextToken(','));
@@ -374,7 +377,7 @@ public class JPanelConfigGeneral extends javax.swing.JPanel implements PanelConf
 
         p = new StringParser(config.getProperty("machine.display"));
         sparam = unifySerialInterface(p.nextToken(':'));
-        if ("serial".equals(sparam) || "file".equals(sparam)) {
+        if ("serial".equals(sparam) || "file".equals(sparam) || "tcp".equals(sparam)) {
             jcboMachineDisplay.setSelectedItem("epson");
             jcboConnDisplay.setSelectedItem(sparam);
             jcboSerialDisplay.setSelectedItem(p.nextToken(','));

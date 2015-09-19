@@ -128,8 +128,8 @@ public class DeviceTicket {
             String sPrinterParam1 = sp.nextToken(',');
             String sPrinterParam2 = sp.nextToken(',');
 
-            // compatibilidad hacia atras.
-            if ("serial".equals(sPrinterType) || "rxtx".equals(sPrinterType) || "file".equals(sPrinterType)) {
+            // backwards compatibility.
+            if ("serial".equals(sPrinterType) || "rxtx".equals(sPrinterType) || "file".equals(sPrinterType) || "tcp".equals(sPrinterType)) {
                 sPrinterParam2 = sPrinterParam1;
                 sPrinterParam1 = sPrinterType;
                 sPrinterType = "epson";
@@ -201,6 +201,9 @@ public class DeviceTicket {
                     m_apool.put(skey, pw);
                 } else if ("file".equals(con)) {
                     pw = new PrinterWritterFile(port);
+                    m_apool.put(skey, pw);
+                } else if ("tcp".equals(con)) {
+                    pw = new PrinterWritterNetwork(port);
                     m_apool.put(skey, pw);
                 } else {
                     throw new TicketPrinterException();
