@@ -18,56 +18,67 @@
 //    along with Openbravo POS.  If not, see <http://www.gnu.org/licenses/>.
 package com.openbravo.pos.payment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import java.awt.Component;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.AppProperties;
 import com.openbravo.pos.forms.AppView;
 import com.openbravo.pos.payment.listeners.IListenForCancelButtonAction;
+import com.openbravo.pos.payment.mcash.McashOrderReceipt;
 import com.openbravo.pos.ticket.TicketInfo;
 import com.openbravo.pos.ticket.TicketLineInfo;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import net.brennheit.mcashapi.MCashClient;
 import net.brennheit.mcashapi.listener.IListenForPaymentUpdated;
 import net.brennheit.mcashapi.listener.IListenForShortlinkScan;
+import net.brennheit.mcashapi.resource.PaymentRequestLink;
 import net.brennheit.mcashapi.resource.PaymentRequestOutcome;
 import net.brennheit.mcashapi.resource.ResourceId;
-import net.brennheit.mcashapi.resource.Shortlink;
 import net.brennheit.mcashapi.resource.ShortlinkLastScan;
+import org.apache.commons.codec.binary.Base64;
 
 public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterface, IListenForShortlinkScan, IListenForPaymentUpdated, IListenForCancelButtonAction {
 
+    private final JPaymentNotifier m_notifier;
+    private final ListModel m_infoList = new DefaultListModel();
+
     private double m_dTotal;
-    private double m_dPaid;
-    private JPaymentNotifier m_notifier;
     private PaymentRequestOutcome m_paymentRequestOutcome;
-    private ListModel m_infoList = new DefaultListModel();
     private MCashClient m_mCashClient;
     private ShortlinkLastScan m_shortlinkLastScan;
-    private boolean m_bCanceled;
-    private final String m_sLock = "synclock";
     private String m_sTicketID;
     private ResourceId m_resourceId;
     private String m_sPrevTicketID;
     private int m_iTicketTriesCounter;
-
-    private String m_mCashBaseUri;
-    private String m_mCashMerchantId;
-    private String m_mCashUserId;
-    private String m_mCashPosId;
-    private String m_mCashAuthKey;
-    private String m_mCashAuthMethod;
-    private String m_mCashSerialNumber;
-    private String m_mCashTestbedToken;
-    private String m_mCashLedger;
     private TicketInfo ticketInfo;
+
+    private final String m_mCashBaseUri;
+    private final String m_mCashMerchantId;
+    private final String m_mCashUserId;
+    private final String m_mCashPosId;
+    private final String m_mCashAuthKey;
+    private final String m_mCashAuthMethod;
+    private final String m_mCashSerialNumber;
+    private final String m_mCashTestbedToken;
+    private final String m_mCashLedger;
+    private final String m_mCashReceiptUri;
 
     /**
      * Creates new form JPaymentFree
+     *
+     * @param app
+     * @param notifier
      */
     public JPaymentMcash(AppView app, JPaymentNotifier notifier) {
         m_notifier = notifier;
@@ -80,10 +91,8 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         m_mCashAuthKey = config.getProperty("mcash.authkey");
         m_mCashAuthMethod = config.getProperty("mcash.authmethod");
         m_mCashSerialNumber = config.getProperty("mcash.serialnumber");
-        m_mCashTestbedToken = config.getProperty("mcash.testbedtoken");
-        if (m_mCashTestbedToken.equals("")) {
-            m_mCashTestbedToken = null;
-        }
+        m_mCashTestbedToken = "".equals(config.getProperty("mcash.testbedtoken")) ? null : config.getProperty("mcash.testbedtoken");
+        m_mCashReceiptUri = config.getProperty("mcash.receipturi");
         m_mCashLedger = config.getProperty("mcash.ledger");
 
     }
@@ -138,7 +147,7 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
     private String buildTempReceiptForPaymentRequest(TicketInfo ticketInfo) {
         StringBuilder builder = new StringBuilder();
         if (ticketInfo != null && ticketInfo.getLines() != null && ticketInfo.getLines().size() > 0) {
-            for(TicketLineInfo l : ticketInfo.getLines()){
+            for (TicketLineInfo l : ticketInfo.getLines()) {
                 builder.append(l.getMultiply());
                 builder.append(" x ");
                 builder.append(l.getProductName());
@@ -150,28 +159,54 @@ public class JPaymentMcash extends javax.swing.JPanel implements JPaymentInterfa
         return builder.toString();
     }
 
-    private String buildFinalReceiptForPaymentRequest(TicketInfo ticketInfo) {
+    private McashOrderReceipt buildMcashOrderReceipt(TicketInfo ticketInfo) {
         StringBuilder builder = new StringBuilder();
+        McashOrderReceipt orderReceipt = null;
         if (ticketInfo != null && ticketInfo.getLines() != null && ticketInfo.getLines().size() > 0) {
-            builder.append("Ordrenr: ");
-            builder.append(ticketInfo.getTicketId());
-            builder.append(System.getProperty("line.separator"));
-            for(TicketLineInfo l : ticketInfo.getLines()){
+            orderReceipt = new McashOrderReceipt();
+            orderReceipt.id = ticketInfo.getTicketId();
+            orderReceipt.total = Double.toString(ticketInfo.getTotal()) + "kr";
+            orderReceipt.lines = new ArrayList<>();
+            for (TicketLineInfo l : ticketInfo.getLines()) {
                 builder.append(l.getMultiply());
                 builder.append(" x ");
                 builder.append(l.getProductName());
                 builder.append(" = kr ");
                 builder.append(l.getMultiply() * l.getPrice());
-                builder.append(System.getProperty("line.separator"));
+                orderReceipt.lines.add(builder.toString());
+                builder.setLength(0); // clear
             }
         }
-        return builder.toString();
+        return orderReceipt;
+    }
+
+    private String buildFinalReceiptForPaymentRequest() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(buildMcashOrderReceipt(ticketInfo));
+    }
+
+    private List<PaymentRequestLink> createLinks() {
+        List<PaymentRequestLink> links = new ArrayList<>();
+        PaymentRequestLink link = new PaymentRequestLink();
+        link.show_on = new ArrayList<>();
+        link.show_on.add("ok");
+        link.caption = "Kvittering #" + Integer.toString(ticketInfo.getTicketId());
+        try {
+            link.uri = m_mCashReceiptUri
+                    + URLEncoder.encode(new String(Base64.encodeBase64(buildFinalReceiptForPaymentRequest().getBytes("UTF-8"))), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(JPaymentMcash.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(JPaymentMcash.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        links.add(link);
+        return links;
     }
 
     private void executeMCashPayment() {
         m_iTicketTriesCounter++;
         String tempTicketID = m_sTicketID + "-" + m_iTicketTriesCounter;
-        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null, true, buildTempReceiptForPaymentRequest(ticketInfo));
+        m_resourceId = m_mCashClient.createPaymentRequest(tempTicketID, m_shortlinkLastScan.id, m_dTotal, "NOK", 0, false, null, true, buildTempReceiptForPaymentRequest(ticketInfo), createLinks());
         if (m_resourceId == null || m_resourceId.id == null) {
             addItemToJList("Kunne ikke opprette betaling, prøv igjen.", m_jListInfo);
             resetButtonsState();

@@ -184,6 +184,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
     
     //Tickets and Receipt list
     public SentenceList getTicketsList() {
+        // TODO: Remove query on CUSTOMERS table. Ask the web service when using it.
          return new StaticSentence(s
             , new QBFBuilder(
             "SELECT T.TICKETID, T.TICKETTYPE, R.DATENEW, P.NAME, C.NAME, SUM(PM.TOTAL) "+ 
@@ -267,6 +268,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
     }
 
     public CustomerInfoExt findCustomerExt(String card) throws BasicException {
+        // TODO: Move to webservice
         return (CustomerInfoExt) new PreparedSentence(s
                 , "SELECT ID, TAXID, SEARCHKEY, NAME, CARD, TAXCATEGORY, NOTES, MAXDEBT, VISIBLE, CURDATE, CURDEBT" +
                   ", FIRSTNAME, LASTNAME, EMAIL, PHONE, PHONE2, FAX" +
@@ -277,6 +279,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
     }
 
     public CustomerInfoExt loadCustomerExt(String id) throws BasicException {
+        // TODO: Move to webservice
         return (CustomerInfoExt) new PreparedSentence(s
                 , "SELECT ID, TAXID, SEARCHKEY, NAME, CARD, TAXCATEGORY, NOTES, MAXDEBT, VISIBLE, CURDATE, CURDEBT" +
                   ", FIRSTNAME, LASTNAME, EMAIL, PHONE, PHONE2, FAX" +
@@ -591,7 +594,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
     }
 
     public final SentenceExec getDebtUpdate() {
-
+        // TODO: Move to webservice
         return new PreparedSentence(s
                 , "UPDATE CUSTOMERS SET CURDEBT = ?, CURDATE = ? WHERE ID = ?"
                 , SerializerWriteParams.INSTANCE);

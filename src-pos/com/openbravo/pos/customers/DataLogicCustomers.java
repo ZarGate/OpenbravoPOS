@@ -78,6 +78,7 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
     
     // CustomerList list
     public SentenceList getCustomerList() {
+        // TODO To action on webservice
         return new StaticSentence(s
             , new QBFBuilder("SELECT ID, TAXID, SEARCHKEY, NAME FROM CUSTOMERS WHERE VISIBLE = " + s.DB.TRUE() + " AND ?(QBF_FILTER) ORDER BY NAME", new String[] {"TAXID", "SEARCHKEY", "NAME"})
             , new SerializerWriteBasic(new Datas[] {Datas.OBJECT, Datas.STRING, Datas.OBJECT, Datas.STRING, Datas.OBJECT, Datas.STRING})
@@ -93,7 +94,7 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
     }
        
     public int updateCustomerExt(final CustomerInfoExt customer) throws BasicException {
-     
+        // TODO To action on webservice
         return new PreparedSentence(s
                 , "UPDATE CUSTOMERS SET NOTES = ? WHERE ID = ?"
                 , SerializerWriteParams.INSTANCE      
@@ -104,6 +105,7 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
     }
     
     public final SentenceList getReservationsList() {
+        // TODO: Remove query on CUSTOMERS table. Ask the web service when using it.
         return new PreparedSentence(s
             , "SELECT R.ID, R.CREATED, R.DATENEW, C.CUSTOMER, CUSTOMERS.TAXID, CUSTOMERS.SEARCHKEY, COALESCE(CUSTOMERS.NAME, R.TITLE),  R.CHAIRS, R.ISDONE, R.DESCRIPTION " +
               "FROM RESERVATIONS R LEFT OUTER JOIN RESERVATION_CUSTOMERS C ON R.ID = C.ID LEFT OUTER JOIN CUSTOMERS ON C.CUSTOMER = CUSTOMERS.ID " +

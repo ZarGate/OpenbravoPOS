@@ -1,12 +1,12 @@
 <project>
     <shortName>zargatepos</shortName>
     <fullName>ZarGate POS</fullName>
-    <version>2.54.0</version>
-    <readmeFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/README</readmeFile>
-    <licenseFile>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/LICENSE</licenseFile>
-    <leftImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</leftImage>
-    <logoImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</logoImage>
-    <splashImage>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.png</splashImage>
+    <version>2.55.0</version>
+    <readmeFile>C:/Users/filip/Development/OpenbravoPOS/README</readmeFile>
+    <licenseFile>C:/Users/filip/Development/OpenbravoPOS/LICENSE</licenseFile>
+    <leftImage>C:/Users/filip/Development/OpenbravoPOS/favicon.png</leftImage>
+    <logoImage>C:/Users/filip/Development/OpenbravoPOS/favicon.png</logoImage>
+    <splashImage>C:/Users/filip/Development/OpenbravoPOS/favicon.png</splashImage>
     <allowLanguageSelection>1</allowLanguageSelection>
     <componentList>
         <component>
@@ -39,7 +39,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -50,7 +50,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zargatepos.desktop</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -61,7 +61,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zargatepos</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -72,43 +72,43 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/reports</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/reports</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/locales</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/locales</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/licensing</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/licensing</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/lib</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/lib</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/dist/openbravopos.jar</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/dist/openbravopos.jar</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/README</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/README</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/openbravo-logo-128.png</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/favicon.ico</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/favicon.ico</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/start.bat</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/start.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/start.sh</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/start.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/configure.bat</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/configure.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/configure.sh</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/configure.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/zgpos_logo.ico</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/zgpos_logo.ico</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -119,7 +119,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>C:/Users/FilipAndreLarsen/Development/OpenbravoPOS/Installer/rxtxSerial.dll</origin>
+                            <origin>C:/Users/filip/Development/OpenbravoPOS/Installer/rxtxSerial.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -161,7 +161,7 @@
     <description>ZarGate POS is a point of sale designed for ZarGate</description>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <outputDirectory>C:/Users/FilipAndreLarsen/Development/build/installerpos</outputDirectory>
+    <outputDirectory>C:/Users/filip/Development/build/installerpos</outputDirectory>
     <release>4</release>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <summary>POS</summary>
@@ -196,7 +196,7 @@
     <platformOptionsList>
         <platformOptions>
             <description>ZarGate POS is a point of sale designed for ZarGate</description>
-            <platform>debian</platform>
+            <platform>linux</platform>
             <release>1</release>
             <summary>POS</summary>
             <vendor>ZarGate</vendor>

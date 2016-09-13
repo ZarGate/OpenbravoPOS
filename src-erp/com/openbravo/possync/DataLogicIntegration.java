@@ -73,7 +73,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
         Transaction t = new Transaction(s) {
             public Object transact() throws BasicException {
                 // Sync the Customer in a transaction
-
+                // TODO Do action on webservice
                 // Try to update
                 if (new PreparedSentence(s,
                             "UPDATE CUSTOMERS SET SEARCHKEY = ?, NAME = ?, NOTES = ?, VISIBLE = " + s.DB.TRUE() + " WHERE ID = ?",
@@ -273,6 +273,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
     }
     
     public List getTickets() throws BasicException {
+        // TODO: Remove query on CUSTOMERS table. Ask the web service when using it.
         return new PreparedSentence(s
                 , "SELECT T.ID, T.TICKETTYPE, T.TICKETID, R.DATENEW, R.MONEY, P.ID, P.NAME, C.ID, C.TAXID, C.SEARCHKEY, C.NAME FROM RECEIPTS R JOIN TICKETS T ON R.ID = T.ID LEFT OUTER JOIN PEOPLE P ON T.PERSON = P.ID LEFT OUTER JOIN CUSTOMERS C ON T.CUSTOMER = C.ID WHERE (T.TICKETTYPE = 0 OR T.TICKETTYPE = 1) AND T.STATUS = 0"
                 , null
