@@ -14,17 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.openbravo.pos.payment.mcash;
+package com.openbravo.pos.api;
 
-import java.util.List;
+import com.google.api.client.http.GenericUrl;
 
 /**
  *
  * @author filip
  */
-public class McashOrderReceipt {
+public class ApiUrl extends GenericUrl {
 
-    public Integer id;
-    public List<String> lines;
-    public String total;
+    private ApiUrl(String encodedUrl) {
+        super(baseUri + encodedUrl);
+    }
+
+    private static String baseUri = "https://zargate.org/webservice/";
+
+    public static void setBaseUri(String baseUri) {
+        ApiUrl.baseUri = baseUri;
+    }
+
+    public static String getBaseUri() {
+        return baseUri;
+    }
+
+    public static ApiUrl ReceiptUpload() {
+        return new ApiUrl("?method=pos&action=add");
+    }
 }

@@ -34,9 +34,10 @@ import com.openbravo.pos.panels.JProductFinder;
 import com.openbravo.pos.scale.ScaleException;
 import com.openbravo.pos.payment.JPaymentSelect;
 import com.openbravo.basic.BasicException;
-import com.openbravo.data.gui.JMessageDialog;
 import com.openbravo.data.gui.ListKeyed;
 import com.openbravo.data.loader.SentenceList;
+import com.openbravo.pos.api.ApiClient;
+import com.openbravo.pos.api.ReceiptHelper;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.customers.DataLogicCustomers;
 import com.openbravo.pos.customers.JCustomerFinder;
@@ -51,7 +52,6 @@ import com.openbravo.pos.forms.BeanFactoryException;
 import com.openbravo.pos.inventory.TaxCategoryInfo;
 import com.openbravo.pos.payment.JPaymentSelectReceipt;
 import com.openbravo.pos.payment.JPaymentSelectRefund;
-import com.openbravo.pos.payment.PaymentInfo;
 import com.openbravo.pos.ticket.ProductInfoExt;
 import com.openbravo.pos.ticket.TaxInfo;
 import com.openbravo.pos.ticket.TicketInfo;
@@ -65,11 +65,9 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.PrintService;
-import net.brennheit.mcashapi.MCashClient;
-import net.brennheit.mcashapi.resource.DateTime;
-import net.brennheit.mcashapi.resource.Ticket;
-import net.brennheit.mcashapi.resource.TicketCode;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -493,16 +491,14 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                 Toolkit.getDefaultToolkit().beep();
                 new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.noproduct")).show(this);
                 stateToZero();
-            } else {
-                // Se anade directamente una unidad con el precio y todo
-                if (m_jaddtax.isSelected()) {
+            } else // Se anade directamente una unidad con el precio y todo
+             if (m_jaddtax.isSelected()) {
                     // debemos quitarle los impuestos ya que el precio es con iva incluido...
                     TaxInfo tax = taxeslogic.getTaxInfo(oProduct.getTaxCategoryID(), m_oTicket.getDate(), m_oTicket.getCustomer());
                     addTicketLine(oProduct, 1.0, dPriceSell / (1.0 + tax.getRate()));
                 } else {
                     addTicketLine(oProduct, 1.0, dPriceSell);
                 }
-            }
         } catch (BasicException eData) {
             stateToZero();
             new MessageInf(eData).show(this);
@@ -872,6 +868,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                     paymentdialog.setPrintSelected("true".equals(m_jbtnconfig.getProperty("printselected", "true")));
 
                     paymentdialog.setTransactionID(ticket.getTransactionID());
+                    String tempID = ticket.getId();
 
                     if (paymentdialog.showDialog(ticket, ticket.getCustomer())) {
 
@@ -894,31 +891,19 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
 
                             executeEvent(ticket, ticketext, "ticket.close", new ScriptArg("print", paymentdialog.isPrintSelected()));
 
-                            // send receipt ID to mCASH if payment option was mCASH
-                            if (ticket.getPayments().get(ticket.getPayments().size() - 1).getName().equals("mcash")) {
-                                PaymentInfo mCashPaymentInfo = ticket.getPayments().get(ticket.getPayments().size() - 1);
-                                AppProperties config = m_App.getProperties();
-                                String mCashBaseUri = config.getProperty("mcash.baseuri");
-                                String mCashMerchantId = config.getProperty("mcash.merchantid");
-                                String mCashUserId = config.getProperty("mcash.merchantuserid");
-                                String mCashPosId = config.getProperty("mcash.posid");
-                                String mCashAuthKey = config.getProperty("mcash.authkey");
-                                String mCashAuthMethod = config.getProperty("mcash.authmethod");
-                                String mCashTestbedToken = config.getProperty("mcash.testbedtoken");
-                                if (mCashTestbedToken.equals("")) {
-                                    mCashTestbedToken = null;
+                            AppProperties config = m_App.getProperties();
+                            boolean apiEnabled = Boolean.valueOf(config.getProperty("api.enabled"));
+                            // send receipt to api
+                            if (apiEnabled) {
+                                try {
+                                    String apiBaseUri = config.getProperty("api.baseuri");
+                                    String apiToken = config.getProperty("api.token");
+                                    boolean apiDebug = Boolean.valueOf(config.getProperty("api.debug"));
+                                    ApiClient apiClient = new ApiClient(apiBaseUri, apiToken, apiDebug);
+                                    apiClient.insertOrUpdateReceipt(tempID, ReceiptHelper.buildOrderReceipt(ticket));
+                                } catch (Exception e) {
+                                    LOG.log(Level.INFO, null, e); //Ignore the error..
                                 }
-                                String mCashLedger = config.getProperty("mcash.ledger");
-                                MCashClient mCashClient = new MCashClient(mCashBaseUri,
-                                        mCashMerchantId, mCashUserId, mCashAuthKey, mCashAuthMethod,
-                                        mCashPosId, mCashLedger, mCashTestbedToken);
-                                net.brennheit.mcashapi.resource.Ticket mCashTicket = new Ticket();
-                                mCashTicket.caption = AppLocal.getIntString("message.mcash.receiptnumber");
-                                mCashTicket.kind = "exit_gate";
-                                mCashTicket.code = new TicketCode();
-                                mCashTicket.code.data = Integer.toString(ticket.getTicketId());
-                                mCashTicket.code.type = "string";
-                                mCashClient.putTicket(mCashPaymentInfo.getTransactionID(), mCashTicket);
                             }
 
                             // Print receipt.
@@ -946,6 +931,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         // or canceled the ticket.close script
         return resultok;
     }
+    private static final Logger LOG = Logger.getLogger(JPanelTicket.class.getName());
 
     private void printTicket(String sresourcename, TicketInfo ticket, Object ticketext) {
         boolean retry;

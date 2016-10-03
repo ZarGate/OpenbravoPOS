@@ -16,7 +16,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with Openbravo POS.  If not, see <http://www.gnu.org/licenses/>.
-
 package com.openbravo.pos.config;
 
 import com.openbravo.data.user.DirtyManager;
@@ -41,17 +40,19 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
     private DirtyManager dirty = new DirtyManager();
     private Map<String, PaymentConfiguration> paymentsName = new HashMap<String, PaymentConfiguration>();
     private PaymentConfiguration pc;
-    
-    /** Creates new form JPanelConfigPayment */
+
+    /**
+     * Creates new form JPanelConfigPayment
+     */
     public JPanelConfigPayment() {
-        
+
         initComponents();
-                
+
         // dirty manager
         jcboCardReader.addActionListener(dirty);
         jcboPaymentGateway.addActionListener(dirty);
         jchkPaymentTest.addActionListener(dirty);
-        
+
         // Payment Provider                
         initPayments("Not defined", new ConfigPaymentPanelEmpty());
         initPayments("external", new ConfigPaymentPanelEmpty());
@@ -61,7 +62,7 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         initPayments("Firs Data / LinkPoint / YourPay", new ConfigPaymentPanelLinkPoint());
         initPayments("PaymentsGateway.net", new ConfigPaymentPanelGeneric());
         initPayments("La Caixa (Spain)", new ConfigPaymentPanelCaixa());
-        
+
         // Lector de tarjetas.
         jcboCardReader.addItem("Not defined");
         jcboCardReader.addItem("Generic");
@@ -69,36 +70,52 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         jcboCardReader.addItem("Intelligent");
         jcboCardReader.addItem("Keyboard");
     }
-    
+
     public boolean hasChanged() {
         return dirty.isDirty();
     }
-    
+
     public Component getConfigComponent() {
         return this;
     }
-   
+
     public void loadProperties(AppConfig config) {
 
         jcboCardReader.setSelectedItem(config.getProperty("payment.magcardreader"));
         jcboPaymentGateway.setSelectedItem(config.getProperty("payment.gateway"));
-        jchkPaymentTest.setSelected(Boolean.valueOf(config.getProperty("payment.testmode")).booleanValue());    
+        jchkPaymentTest.setSelected(Boolean.valueOf(config.getProperty("payment.testmode")).booleanValue());
         loadMCashProperties(config);
+        loadApiProperties(config);
         pc.loadProperties(config);
         dirty.setDirty(false);
     }
-   
+
     public void saveProperties(AppConfig config) {
-        
+
         config.setProperty("payment.magcardreader", comboValue(jcboCardReader.getSelectedItem()));
         config.setProperty("payment.gateway", comboValue(jcboPaymentGateway.getSelectedItem()));
         config.setProperty("payment.testmode", Boolean.toString(jchkPaymentTest.isSelected()));
         setMCashProperties(config);
+        setApiProperties(config);
         pc.saveProperties(config);
         dirty.setDirty(false);
     }
-    
-    private void setMCashProperties(AppConfig config){
+
+    private void setApiProperties(AppConfig config) {
+        config.setProperty("api.enabled", Boolean.toString(jchkApiEnabled.isSelected()));
+        config.setProperty("api.debug", Boolean.toString(jchkApiDebugEnabled.isSelected()));
+        config.setProperty("api.baseuri", jtxtApiBaseUri.getText());
+        config.setProperty("api.token", jtxtApiToken.getText());
+    }
+
+    private void loadApiProperties(AppConfig config) {
+        jchkApiEnabled.setSelected(Boolean.valueOf(config.getProperty("api.enabled")).booleanValue());
+        jchkApiDebugEnabled.setSelected(Boolean.valueOf(config.getProperty("api.debug")).booleanValue());
+        jtxtApiBaseUri.setText(config.getProperty("api.baseuri"));
+        jtxtApiToken.setText(config.getProperty("api.token"));
+    }
+
+    private void setMCashProperties(AppConfig config) {
         config.setProperty("mcash.enabled", Boolean.toString(jchkMCashEnabled.isSelected()));
         config.setProperty("mcash.baseuri", jtxtMCashBaseUri.getText());
         config.setProperty("mcash.merchantid", jtxtMCashMerchantId.getText());
@@ -111,8 +128,8 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         config.setProperty("mcash.ledger", jtxtMCashLedger.getText());
         config.setProperty("mcash.receipturi", jtxtMCashReceiptUri.getText());
     }
-    
-    private void loadMCashProperties(AppConfig config){
+
+    private void loadMCashProperties(AppConfig config) {
         jchkMCashEnabled.setSelected(Boolean.valueOf(config.getProperty("mcash.enabled")).booleanValue());
         jtxtMCashBaseUri.setText(config.getProperty("mcash.baseuri"));
         jtxtMCashMerchantId.setText(config.getProperty("mcash.merchantid"));
@@ -125,20 +142,20 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         jtxtMCashLedger.setText(config.getProperty("mcash.ledger"));
         jtxtMCashReceiptUri.setText(config.getProperty("mcash.receipturi"));
     }
-    
+
     private void initPayments(String name, PaymentConfiguration pc) {
         jcboPaymentGateway.addItem(name);
         paymentsName.put(name, pc);
     }
-     
+
     private String comboValue(Object value) {
         return value == null ? "" : value.toString();
-    }   
+    }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -173,6 +190,15 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         jtxtMCashTestbedToken = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         jtxtMCashReceiptUri = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel24 = new javax.swing.JLabel();
+        jtxtApiBaseUri = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        jchkApiEnabled = new javax.swing.JCheckBox();
+        jtxtApiToken = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        jchkApiDebugEnabled = new javax.swing.JCheckBox();
+        jLabel28 = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(AppLocal.getIntString("Label.Payment"))); // NOI18N
 
@@ -227,7 +253,7 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
         );
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("pos_messages"); // NOI18N
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Panel.Config.Mcash"))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("panel.config.mcash"))); // NOI18N
 
         jLabel12.setText(AppLocal.getIntString("label.mcash.baseuri")); // NOI18N
 
@@ -348,6 +374,67 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
                     .addComponent(jLabel23)))
         );
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("panel.config.api"))); // NOI18N
+        jPanel4.setPreferredSize(new java.awt.Dimension(672, 83));
+
+        jLabel24.setText(AppLocal.getIntString("label.mcash.baseuri")); // NOI18N
+
+        jLabel25.setText(AppLocal.getIntString("label.mcash.integration")); // NOI18N
+
+        jchkApiEnabled.setText(bundle.getString("checkbox.active")); // NOI18N
+
+        jLabel29.setText(AppLocal.getIntString("label.mcash.authkey")); // NOI18N
+
+        jchkApiDebugEnabled.setText(bundle.getString("checkbox.active")); // NOI18N
+
+        jLabel28.setText(AppLocal.getIntString("label.mcash.integration")); // NOI18N
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtxtApiBaseUri, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jchkApiEnabled, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtxtApiToken))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jchkApiDebugEnabled, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jchkApiDebugEnabled)
+                        .addComponent(jLabel28))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jchkApiEnabled)
+                        .addComponent(jLabel25)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jtxtApiBaseUri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel24)
+                    .addComponent(jtxtApiToken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -356,7 +443,8 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -366,10 +454,10 @@ public class JPanelConfigPayment extends javax.swing.JPanel implements PanelConf
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jPanel3.getAccessibleContext().setAccessibleName(bundle.getString("Panel.Config.Mcash")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
 private void jcboPaymentGatewayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboPaymentGatewayActionPerformed
@@ -379,11 +467,11 @@ private void jcboPaymentGatewayActionPerformed(java.awt.event.ActionEvent evt) {
         jPanel2.removeAll();
         jPanel2.add(pc.getComponent());
         jPanel2.revalidate();
-        jPanel2.repaint(); 
+        jPanel2.repaint();
     }
 }//GEN-LAST:event_jcboPaymentGatewayActionPerformed
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -398,13 +486,22 @@ private void jcboPaymentGatewayActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JComboBox jcboCardReader;
     private javax.swing.JComboBox jcboPaymentGateway;
+    private javax.swing.JCheckBox jchkApiDebugEnabled;
+    private javax.swing.JCheckBox jchkApiEnabled;
     private javax.swing.JCheckBox jchkMCashEnabled;
     private javax.swing.JCheckBox jchkPaymentTest;
+    private javax.swing.JTextField jtxtApiBaseUri;
+    private javax.swing.JTextField jtxtApiToken;
     private javax.swing.JTextField jtxtMCashAuthKey;
     private javax.swing.JTextField jtxtMCashAuthMethod;
     private javax.swing.JTextField jtxtMCashBaseUri;
@@ -416,5 +513,5 @@ private void jcboPaymentGatewayActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JTextField jtxtMCashTestbedToken;
     private javax.swing.JTextField jtxtMCashUserId;
     // End of variables declaration//GEN-END:variables
-    
+
 }
