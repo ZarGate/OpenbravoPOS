@@ -17,3 +17,4 @@ nbproject/private/private.xml
 nbproject/private/private.properties
 nbproject/build-impl.xml
 nbproject/genfiles.properties
+!lib/*.jar
